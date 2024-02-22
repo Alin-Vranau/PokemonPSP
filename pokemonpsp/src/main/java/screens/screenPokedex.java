@@ -23,6 +23,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -258,6 +259,14 @@ public class screenPokedex extends JFrame {
 				}
 				return c;
 			}
+
+			boolean[] columnEditables = new boolean[] {
+					false, false
+			};
+
+			public boolean isCellEditable(int row, int column) {
+				return columnEditables[column];
+			}
 		};
 
 		// JTable pokeTable = new JTable (listaPokemons, nombresColumnas);
@@ -341,7 +350,8 @@ public class screenPokedex extends JFrame {
 
 						String inputLine;
 
-						BufferedReader in = new BufferedReader(new InputStreamReader(conPokemon.getInputStream()));
+						BufferedReader in = new BufferedReader(
+								new InputStreamReader(conPokemon.getInputStream(), StandardCharsets.UTF_8));
 						StringBuilder responsePokemon = new StringBuilder();
 						while ((inputLine = in.readLine()) != null) {
 							responsePokemon.append(inputLine);
@@ -349,7 +359,7 @@ public class screenPokedex extends JFrame {
 						in.close();
 
 						BufferedReader inSpecies = new BufferedReader(
-								new InputStreamReader(conSpecies.getInputStream()));
+								new InputStreamReader(conSpecies.getInputStream(), StandardCharsets.UTF_8));
 						StringBuilder responseSpecies = new StringBuilder();
 						while ((inputLine = inSpecies.readLine()) != null) {
 							responseSpecies.append(inputLine);
@@ -391,7 +401,17 @@ public class screenPokedex extends JFrame {
 
 						// Descripcion
 						JSONObject jsonResponseSpecies = new JSONObject(responseSpecies.toString());
-						String descrption = jsonResponseSpecies.getJSONArray("flavor_text_entries").getJSONObject(26)
+						String descrption;
+						int posicion = 0;
+						for (int i = 0; i < 40; i++) {
+							String pais = jsonResponseSpecies.getJSONArray("flavor_text_entries").getJSONObject(i)
+									.getJSONObject("language").getString("name");
+							if (pais.equals("es")) {
+								posicion = i;
+								break;
+							}
+						}
+						descrption = jsonResponseSpecies.getJSONArray("flavor_text_entries").getJSONObject(posicion)
 								.getString("flavor_text");
 						textDescription.setText(descrption);
 						// Habitat
