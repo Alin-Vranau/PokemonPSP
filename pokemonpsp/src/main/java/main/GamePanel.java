@@ -4,11 +4,17 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 
+import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import Tile.TileManager;
 import entity.Player;
+import objects.Pokemon;
+import objects.Type;
+import screens.BattlePanel;
 
 public class GamePanel extends JPanel implements Runnable {
 	// ajustes de la pantalla
@@ -36,13 +42,55 @@ public class GamePanel extends JPanel implements Runnable {
 	Thread gameThread;
 	public CollisionChecker cChecker = new CollisionChecker(this);
 	public Player player = new Player(this, keyH);
+
+	JFrame window;
 	
-	public GamePanel() {
+	
+	public GamePanel(JFrame window) {
 		this.setPreferredSize(new Dimension(screenWidth, screenHeight));
 		this.setBackground(Color.black);
 		this.setDoubleBuffered(true);
 		this.addKeyListener(keyH);
 		this.setFocusable(true);
+		this.window = window;
+
+		this.addKeyListener(new KeyListener() {
+
+			@Override
+			public void keyTyped(KeyEvent e) {
+			}
+
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_E) {
+					setEnabled(false);
+					
+					window.setVisible(false);
+					JFrame win = new JFrame();
+       				win.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+					win.setBounds(window.getX(), window.getY(), window.getWidth(), window.getHeight());
+        			win.setResizable(false);
+        			win.setTitle("Batalla");
+
+        			Type.initializeTypes();
+
+					// Crear el panel del juego y pasarlo a la ventana
+					JPanel gamePanel = new BattlePanel(window.getWidth(), window.getHeight(), new Pokemon("Charizard"),
+							new Pokemon("Vaporeon") );
+					win.add(gamePanel);
+        
+        
+					//window.pack();
+					//window.setLocationRelativeTo(null);
+					win.setVisible(true);
+				}
+			}
+
+			@Override
+			public void keyReleased(KeyEvent e) {
+			}
+			
+		});
 	}
 
 	public void startGameThread() {

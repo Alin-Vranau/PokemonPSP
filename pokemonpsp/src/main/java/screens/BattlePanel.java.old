@@ -13,7 +13,6 @@ import org.json.JSONObject;
 import objects.Move;
 import objects.Pokemon;
 import objects.Type;
-import screens.DialogPanel.DialogType;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -35,26 +34,22 @@ import java.net.URL;
 
 public class BattlePanel extends JPanel {
 
-    private BattlePanel battlePanel = this;
-
-    JPanel interactivePanel; // Panel con la zona inferior de la pantalla
-    JPanel fightPanel; // Panel con el campo de batalla
-    JPanel dialogPanel; // Panel con dialogos
-    JPanel optionPanel; // Panel de opciones (Luchar, huir)
-    JPanel attacksPanel; // Panel con los ataques
-    PokemonChangePanel pokemonChangePanel; // Panel para el cambio de pokemon
-    PokemonStatus enemyStatus; // Estado del pokemon enemigo
-    PokemonStatus playerStatus; // Estado del pokemon del jugador
+    static JPanel interactivePanel; // Panel con la zona inferior de la pantalla
+    static JPanel fightPanel; // Panel con el campo de batalla
+    static JPanel dialogPanel; // Panel con dialogos
+    static JPanel optionPanel; // Panel de opciones (Luchar, huir)
+    static JPanel attacksPanel; // Panel con los ataques
+    static PokemonStatus enemyStatus; // Estado del pokemon enemigo
+    static PokemonStatus playerStatus; // Estado del pokemon del jugador
     static BattlePanel gamePanel; // Panel que contiene todos los elementos la pantalla
-    JLabel playersPokemonImage; // Imagen del pokemon del jugador
-    JLabel enemysPokemonImage; // Imagen del pokemon enemigo
-    int optionsSize = 0; // Tamaño que tiene la seleccion de accion
-    int healthStatusWidth; // Ancho del cuadro de vida
-    int healthStatusHeigth; // Alto del cuadro de vida
+    static JLabel playersPokemonImage; // Imagen del pokemon del jugador
+    static JLabel enemysPokemonImage; // Imagen del pokemon enemigo
+    static int optionsSize = 0; // Tamaño que tiene la seleccion de accion
+    static int healthStatusWidth; // Ancho del cuadro de vida
+    static int healthStatusHeigth; // Alto del cuadro de vida
 
-    Pokemon playerPokemon; // El pokemon actual del jugador
-    Pokemon enemyPokemon; // El pokemon actual del enemigo
-    int pokemonsDefeated = 0; // Contador utilizado para saber cuando termina la pelea
+    static Pokemon playerPokemon; // El pokemon actual del jugador
+    static Pokemon enemyPokemon; // El pokemon actual del enemigo
 
 
     public static void main(String[] args) {
@@ -67,10 +62,13 @@ public class BattlePanel extends JPanel {
         Type.initializeTypes();
 
         // Crear el panel del juego y pasarlo a la ventana
-        gamePanel = new BattlePanel(window.getWidth(), window.getHeight(), new Pokemon("Drifloon"),
+        gamePanel = new BattlePanel(window.getWidth(), window.getHeight(), new Pokemon("Mudkip"),
                 new Pokemon("Tarountula") );
         window.add(gamePanel);
         
+        
+        //window.pack();
+        //window.setLocationRelativeTo(null);
         window.setVisible(true);
     }
 
@@ -101,10 +99,12 @@ public class BattlePanel extends JPanel {
         healthStatusHeigth = (int) (fightPanel.getPreferredSize().height * 0.25);
         
         // Se añaden los pokemons y sus barras de vida a la pantalla
-        // TODO modificar por el primer pokemon de la lista del npc
+        //Pokemon enemyPokemon = new Pokemon("Pikachu", 300, new ArrayList<>());
+        
         placeEnemyPokemon(enemyPokemon);
-         
-        // TODO modificar por el primer pokemon de la lista del jugador
+
+        //Pokemon playerPokemon = new Pokemon("Venusaur", 600, new ArrayList<>());            
+        
         placePlayerPokemon(playerPokemon);
        
         // Creacion del panel que contendra los paneles que se utilicen en la parte inferior de la pantalla
@@ -133,12 +133,14 @@ public class BattlePanel extends JPanel {
         cons.weightx= 0.3;
         cons.weighty = 0.5;
         
-        // Creacion de los botones del panel de opciones
+        // Creacion de los botones del panes el opciones
         JButton boton = new JButton("Atacar");
         boton.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
+                //enemyPokemon.setActualHealth(enemyPokemon.getActualHealth() - 50);
+                //enemyStatus.updateHealth();
                 optionPanel.setVisible(false);
                 createAttacksPanel();
             }
@@ -146,12 +148,13 @@ public class BattlePanel extends JPanel {
         });
         optionPanel.add(boton,cons);
 
-        JButton boton2 = new JButton("Cambiar Pokemon");
+        // TODO: Encontrar como cerrar el panel desde el propio panel (Posibilidad de eliminar este boton ya que rompe el estilo de juego)
+        JButton boton2 = new JButton("Huir");
+        //boton2.setPreferredSize(new Dimension((int) (optionPanel.getPreferredSize().width/2), optionPanel.getPreferredSize().height));
         boton2.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                openPokemonChangePanel(false);
                 
             }
             
@@ -163,52 +166,16 @@ public class BattlePanel extends JPanel {
     }
 
 
-    /**
-     * Método que abre el panel para cambiar de pokemon
-     * 
-     * @param defeated - Si se abre el panel por haber muerto el pokemon o si ha sido elección del jugador
-     */
-    private void openPokemonChangePanel(boolean defeated){
-        pokemonChangePanel = new PokemonChangePanel(getSize().width, getSize().height, defeated, battlePanel);
-        optionPanel.setVisible(false);
-        fightPanel.setVisible(false);
-        interactivePanel.setVisible(false);
-        fightPanel.setVisible(false);
-        interactivePanel.setVisible(false);
-        add(pokemonChangePanel, BorderLayout.CENTER);
-    }
-
-
-    /**
-     * Método que muestra el panel de combate como al inicio de una batalla, usado al volver de algun panel distinto (como el de selección de pokemon)
-     */
-    public void resetBattlePanel() {
-
-        if (pokemonChangePanel != null) {
-            pokemonChangePanel.setVisible(false);
-        }
-        fightPanel.setVisible(true);
-        interactivePanel.setVisible(true);
-
-        repaint();
-    }
-
-    /**
-     * Metodo que crea el panel con los ataques del pokemon del jugador y lo muestra en la pantalla
-     */
     private void createAttacksPanel() {
         
-        // Se comprueba que el panel no exista ya un panel de atauqes, de ser asi se elimina de la interfaz
         if (attacksPanel != null) {
             interactivePanel.remove(attacksPanel);
         }
 
-        // Creación del panel de combate
         attacksPanel = new JPanel();
         attacksPanel.setPreferredSize(new Dimension(interactivePanel.getWidth(), interactivePanel.getHeight()));
         attacksPanel.setLayout(new GridBagLayout());
 
-        // Restricciones que ajustan la posición de los botones de ataque superiores
         Insets i1 = new Insets(10, 15, 15, 15);
         GridBagConstraints topButtonsConstraints = new GridBagConstraints();
         topButtonsConstraints.fill = GridBagConstraints.BOTH;
@@ -218,21 +185,20 @@ public class BattlePanel extends JPanel {
         topButtonsConstraints.gridwidth = 2;
         topButtonsConstraints.insets= i1;
 
-        // Restricciones que ajustan la posición de los botones de ataque inferiores
         Insets i2 = new Insets(0, 15, 15, 15);
         GridBagConstraints bottomButtonsConstraints = new GridBagConstraints();
         bottomButtonsConstraints.fill = GridBagConstraints.BOTH;
-        bottomButtonsConstraints.weightx = 0.4;
+        bottomButtonsConstraints.weightx = 1;
         bottomButtonsConstraints.weighty = 1;
         bottomButtonsConstraints.gridy = 1;
+        bottomButtonsConstraints.ipadx = 3;
         bottomButtonsConstraints.gridwidth = 2;
         bottomButtonsConstraints.insets = i2;
 
-        // Restricciones que ajustan la posición del botón para volver al panel de opciones
         Insets i3 = new Insets(0, 15, 5, 15);
         GridBagConstraints backButtonConstraints = new GridBagConstraints();
         backButtonConstraints.fill = GridBagConstraints.BOTH;
-        backButtonConstraints.weighty = 0.3;
+        backButtonConstraints.weighty = 0.5;
         backButtonConstraints.anchor = GridBagConstraints.PAGE_END; // Se ajusta la posicion en la esquina inferior derecha
         backButtonConstraints.insets = i3;
         backButtonConstraints.gridx = 2;
@@ -240,26 +206,33 @@ public class BattlePanel extends JPanel {
         backButtonConstraints.gridy = 2;
         backButtonConstraints.gridheight = 1;
 
-        // Array que contendrá los botones de ataque
+        
         JButton[] attackButtons = new JButton[4];
         int index = 0;
-
-        // Se crea un boton por cada movimiento del pokemon
         for (Move move : playerPokemon.getMoves()) {
             JButton attack = new JButton(move.getName());
-            adjustFontSize(attack, 0.9);
+            adjustFontSize(attack, 0.8);
 
             attack.addActionListener(new ActionListener() {
 
                 public void actionPerformed(ActionEvent e) {
                     // TODO: Crear dialogo para que se muestre el ataque usado y su efectividad
-                    int attackOutput = playerPokemon.attack(move, enemyPokemon);
+                    playerPokemon.attack(move, enemyPokemon);
                     enemyStatus.updateHealth();
                     attacksPanel.setVisible(false);
-                    String attackStatus = (attackOutput == 1) ? "Ha fallado" : (attackOutput == 2) ? "El ataque no afecta a " + enemyPokemon.getName() : "";
-                    showDialog(String.format("Tu %s ha usado %s. %s", playerPokemon.getName(), move.getName(), attackStatus), DialogType.PLAYER_ATTACK);
                     
-                    
+                    int randomAttack = (int) Math.random()*4;
+
+                    for (Move move : enemyPokemon.getMoves()) {
+                        if (randomAttack == 0) {
+                            enemyPokemon.attack(move, playerPokemon);
+                            break;
+                        }
+                        randomAttack--;
+                    }
+
+                    playerStatus.updateHealth();
+                    optionPanel.setVisible(true);
                 }
                 
             });
@@ -268,17 +241,15 @@ public class BattlePanel extends JPanel {
             index++;
         }
 
-        // Si el pokemon tiene menos de 4 ataques se añaden botones inactivos
-        for (int i = 4; i > playerPokemon.getMoves().size(); i--) {
-
-            JButton attack = new JButton("-----");
-            adjustFontSize(attack, 0.8);
-            attack.setEnabled(false);
-            attackButtons[i - 1] = attack;
-
-        }
-
-        // Creación del boton para volver al panel de opciones
+        /*JButton attack1 = new JButton(playerPokemon.getMoves());
+        adjustFontSize(attack1, 0.9);
+        JButton attack2 = new JButton("Ataque 2");
+        adjustFontSize(attack2, 0.9);
+        JButton attack3 = new JButton("Ataque 3");
+        adjustFontSize(attack3, 0.9);
+        JButton attack4 = new JButton("Ataque 4");
+        adjustFontSize(attack4, 0.9);
+        */
         JButton back = new JButton("Volver");
         adjustFontSize(back, 0.6);
         back.addActionListener(new ActionListener() {
@@ -291,136 +262,19 @@ public class BattlePanel extends JPanel {
             
         });
 
-
         attacksPanel.add(attackButtons[0], topButtonsConstraints);
         attacksPanel.add(attackButtons[1], topButtonsConstraints);
         attacksPanel.add(attackButtons[2], bottomButtonsConstraints);
         attacksPanel.add(attackButtons[3], bottomButtonsConstraints);
         attacksPanel.add(back, backButtonConstraints);
 
-        interactivePanel.add(attacksPanel);
-
-    }
-
-    /**
-     * Método que muestra un diálogo despues de cada accion del combate (Atacar, cambiar de pokemon, pokemon eliminado)
-     * 
-     * @param dialogText - El texto que contendra el dialogo
-     * @param dialogType - El tipo de dialogo, sera una constante de el enum DialogType de la clase DialogPanel, indica la accion que invoca al dialogo
-     */
-    public void showDialog(String dialogText, DialogType dialogType) {
-        
-        if (dialogPanel != null) {
-            interactivePanel.remove(dialogPanel);
-        }
-
-        dialogPanel = new screens.DialogPanel(interactivePanel.getWidth(), interactivePanel.getHeight(),dialogText, battlePanel, dialogType);
-        interactivePanel.add(dialogPanel);
-        dialogPanel.setVisible(true);
-
-    }
-
-    /**
-     * Método que elige un ataque aleatorio del enemigo y ataca con el al jugador
-     */
-    public void enemyAttack() {
-
-        int randomAttack = (int) (Math.random()*4);
-
-            for (Move enemyMove : enemyPokemon.getMoves()) {
-                if (randomAttack == 0) {
-                    int attackOutput = enemyPokemon.attack(enemyMove, playerPokemon);
-                    playerStatus.updateHealth();
-
-                    String attackStatus = (attackOutput == 1) ? "Ha fallado" : (attackOutput == 2) ? "El ataque no afecta a " + playerPokemon.getName() : "";
-                    showDialog(String.format("El %s enemigo ha usado %s. %s", enemyPokemon.getName(), enemyMove.getName(), attackStatus), DialogType.ENEMY_ATTACK);
-                    break;
-                }
-                randomAttack--;
-            }
-
-    }
-
-    /**
-     * Método que muestra el panel de opciones despues de un diálogo
-     */
-    public void showOptionsPanel() {
-        if (dialogPanel != null){
-            dialogPanel.setVisible(false);
-        }
-        optionPanel.setVisible(true);
-    }
-
-    /**
-     * Metodo que se invoca desde la clase DialogPanel al acabar de mostrar el dialogo, se encaraga de realizar la siguiente accion del combate
-     * 
-     * @param dialogTpye - Constante que se utiliza para saber que tipo de dialog se mostro y que hacer a continuacion
-     */
-    public void postDialogAction(DialogType dialogTpye) {
-
-        // Se comprueba el tipo de dialogo que se acaba de mostrar y se realiza la siguiente accion
-        switch (dialogTpye) {
-            // Si el dialogo es de un ataque enemigo se comprueba que el pokemon del jugador no haya sido derrotado, si es asi se muestran las opciones de combate,
-            // si no se muestra un dialogo para indicar que el pokemon ha sido derrotado
-            case ENEMY_ATTACK -> {if (playerPokemon.getActualHealth() == 0) {
-                                    showDialog(String.format("Tu %s se ha debilitado", playerPokemon.getName()), DialogType.PLAYER_POKEMON_DEFEATED);
-                                } else {
-                                    dialogPanel.setVisible(false);
-                                    showOptionsPanel();}}
-            // Si el dialogo es de un ataque del jugador se comprueba que el pokemon del enemigo no haya sido derrotado, si es asi se llama a la funcion que hace que el enemigo ataque,
-            // si no se muestra un dialogo para indicar que el pokemon ha sido derrotado
-            case PLAYER_ATTACK -> {
-                                    if (enemyPokemon.getActualHealth() == 0) {
-                                        showDialog(String.format("El %s enemigo se ha debilitado", enemyPokemon.getName()), DialogType.ENEMY_POKEMON_DEFEATED);
-                                    } else{
-                                        dialogPanel.setVisible(false);
-                                        enemyAttack();}}
-            // Si el dialogo es para indicar que el pokemon del jugador ha sido derrotado se llama a la funcion que muestra la pantalla para cambiar de pokemon
-            case PLAYER_POKEMON_DEFEATED -> {   if (playersPokemonsDefeated()){ 
-                                                    System.exit(0);
-                                                } else
-                                                    openPokemonChangePanel(true);}
-            // Si el dialogo es para indicar que el pokemon del enemigo ha sido derrotado se llama a la funcion que cambia al siguiente pokemon del enemigo
-            case ENEMY_POKEMON_DEFEATED -> {System.out.println("muerto");
-                                            System.exit(0);}
-            // Si el dialogo se produce despues de un cambio de pokemon se muestra el panel de opciones
-            case PLAYER_POKEMON_CHANGED -> {dialogPanel.setVisible(false);
-                                            showOptionsPanel();}
-
-        }
+        interactivePanel.add(attacksPanel, BorderLayout.EAST);
 
     }
 
 
     /**
-     * Función que comprueba si todos los pokemons del juagdor han sido derrotados
-     * 
-     * @return - True si todos han sido derrotados o false si no.
-     */
-    private boolean playersPokemonsDefeated() {
-
-        boolean defeated = false;
-
-        int pokemonsDefeated = 0;
-        /* TODO : habilitar cuando la clase jugador tenga la lista de pokemons
-        for (Pokemon pokemon : player.pokemonList) {
-            if pokemon.getActualHealth() == 0
-                pokemonsDefeated++;
-        }
-
-        if (pokemonsDefeated == player.pokemonList.size()) {
-            defeated == true;
-        }
-        */
-
-        return defeated;
-
-    }
-
-
-    /**
-     * Método que coloca la imagen del pokemon enemigo y su vida en la zona de batalla
-     * 
+     * Metodo que coloca la imagen del pokemon enemigo y su vida en la zona de batalla
      * @param pokemon - El pokemon enemigo
      */
     private void placeEnemyPokemon(Pokemon pokemon) {
@@ -483,11 +337,10 @@ public class BattlePanel extends JPanel {
     }
 
     /**
-     * Método que coloca la imagen del pokemon del jugador y su vida en la pantalla
-     * 
+     * Metodo que coloca la imagen del pokemon del jugador y su vida en la pantalla
      * @param pokemon - El pokemon a colocar
      */
-    public void placePlayerPokemon(Pokemon pokemon) {
+    private void placePlayerPokemon(Pokemon pokemon) {
 
         if (playerStatus != null) {
             fightPanel.remove(playerStatus);
@@ -557,12 +410,6 @@ public class BattlePanel extends JPanel {
     }
 
 
-    /**
-     * Método utilizado para ajustar el tamaño del texto de los botones de la interfaz
-     * 
-     * @param button - El botón sobre el que queremos realizar la modificación
-     * @param multiplier - El multiplicador que se aplicará sobre el texto
-     */
     private void adjustFontSize(JButton button, double multiplier) {
         Font buttonFont = button.getFont();
         String buttonText = button.getText();

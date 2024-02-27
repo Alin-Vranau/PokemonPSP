@@ -23,9 +23,8 @@ public class main {
         window.setTitle("Pokemon");
 
         // Crear el panel del juego y pasarlo a la ventana
-        GamePanel gamePanel = new GamePanel();
+        GamePanel gamePanel = new GamePanel(window);
         window.add(gamePanel);
-
         window.pack();
         window.setLocationRelativeTo(null);
         window.setVisible(true);

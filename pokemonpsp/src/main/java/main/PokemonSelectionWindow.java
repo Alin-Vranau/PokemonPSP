@@ -2,6 +2,9 @@ package main;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
+
+import entity.Player;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -70,6 +73,7 @@ public class PokemonSelectionWindow extends JDialog {
                 public void actionPerformed(ActionEvent e) {
                     JButton selectedButton = (JButton) e.getSource();
                     selectedPokemon = selectedButton.getText();
+                    Player.gender = (femenino.isSelected()) ? "girl" : "boy";
                     JOptionPane.showMessageDialog(PokemonSelectionWindow.this,
                             "Has seleccionado a " + selectedPokemon,
                             "Pokémon seleccionado",
