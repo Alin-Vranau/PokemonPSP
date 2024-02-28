@@ -2,15 +2,19 @@ package entity;
 
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.List;
 
 import javax.imageio.ImageIO;
+import javax.swing.SwingUtilities;
 
 import main.GamePanel;
 import main.KeyHandler;
 import main.PokemonSelection;
+import screens.screenPokedex;
 
 public class Player extends Entity {
 	KeyHandler keyH;
@@ -19,6 +23,8 @@ public class Player extends Entity {
 	public final int screenY;
 	private List<String> pokemonNames;
 	private boolean battlePanelOpened = false;
+	private boolean pokedexPanelOpened = false;	
+	private screenPokedex pokedex;
 
 	public Player(GamePanel gp, KeyHandler keyH, PokemonSelection pokemonSelection) {
 		super(gp);
@@ -37,6 +43,22 @@ public class Player extends Entity {
 
 		setDefaultValues();
 		getPlayerImage();
+		pokedex = new screenPokedex();
+    	screenPokedex.llenarListaPokemon();
+		pokedex.setLocationRelativeTo(null);
+
+		initPokedex();
+	}
+
+	private void initPokedex() {
+		pokedex = new screenPokedex();
+		screenPokedex.llenarListaPokemon();
+		pokedex.addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent e) {
+				pokedexPanelOpened = false;
+			}
+		});
 	}
 
 	public void setDefaultValues() {
@@ -62,13 +84,29 @@ public class Player extends Entity {
 	}
 
 	public void update() {
+		if (keyH.pPressed) {
+			if (pokedex == null) {
+				// Crear la ventana de la Pokedex si no existe.
+				pokedex = new screenPokedex();
+				pokedex.addWindowListener(new WindowAdapter() {
+					@Override
+					public void windowClosing(WindowEvent e) {
+						// Cambiar el estado cuando la ventana se cierra.
+						pokedexPanelOpened = false;
+					}
+				});
+			}
+			// Alternar la visibilidad de la Pokedex.
+			togglePokedexVisibility();
+			keyH.pPressed = false; // Asegurar que la pulsación se maneje una sola vez.
+		}
 		collisionOn = false;
 		if (keyH.upPressed || keyH.downPressed || keyH.leftPressed || keyH.rightPressed) {
 			int nextX = worldX;
 			int nextY = worldY;
 	
 			if (keyH.upPressed) {
-				direction = "up";            
+				direction = "up";
 				nextY -= speed;
 			} else if (keyH.downPressed) {
 				direction = "down";            
@@ -80,7 +118,7 @@ public class Player extends Entity {
 				direction = "right";
 				nextX += speed;
 			}
-	
+
 			// Verificación de colisión usando la nueva función
 			collisionOn = gp.cChecker.checkEntityCollision(this, nextX, nextY);
 			// Verificación adicional de colisión con el NPC solo si no hay colisión con tiles 
@@ -111,6 +149,19 @@ public class Player extends Entity {
 				spriteCounter = 0;
 			}
 		}
+	}
+
+	private void togglePokedexVisibility() {
+		SwingUtilities.invokeLater(() -> {
+			if (!pokedexPanelOpened) {
+				pokedex.setLocationRelativeTo(null); // Esto centrará la ventana
+				pokedex.setVisible(true);
+				pokedexPanelOpened = true;
+			} else {
+				pokedex.setVisible(false);
+				pokedexPanelOpened = false;
+			}
+		});
 	}
 
 	public boolean checkCollisionWithNPC(int nextX, int nextY, NPC_Personaje1 npc) {

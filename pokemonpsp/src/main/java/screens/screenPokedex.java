@@ -1,7 +1,6 @@
 package screens;
 
 import java.awt.EventQueue;
-
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -9,14 +8,10 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.plaf.basic.BasicScrollBarUI;
-
 import java.awt.Color;
 import java.awt.Component;
-
 import javax.swing.JLabel;
 import java.awt.Font;
-import java.awt.Image;
-import java.beans.Statement;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -24,10 +19,6 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-
 import javax.swing.JTable;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.BorderFactory;
@@ -36,12 +27,10 @@ import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
-
 import org.json.JSONArray;
 import org.json.JSONObject;
 import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
-import javax.swing.JTextField;
 import javax.swing.JTextPane;
 
 public class screenPokedex extends JFrame {
@@ -107,7 +96,7 @@ public class screenPokedex extends JFrame {
 	 */
 	public screenPokedex() {
 		setResizable(false);
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 662, 447);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
