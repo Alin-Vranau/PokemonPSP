@@ -1,14 +1,25 @@
 package main;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
-import java.io.BufferedReader;
+
+import javax.imageio.ImageIO;
+import javax.swing.*;
+
+import entity.Player;
+
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.net.URL;
+import java.util.List;
+
+import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Random;
 
 public class PokemonSelection {
     private List<String> selectedPokemonNames = new ArrayList<>();
@@ -16,63 +27,196 @@ public class PokemonSelection {
 
     public void selectPokemon() {
         try {
-            // Realizar una solicitud GET a la PokeAPI para obtener información sobre los Pokémon
-            URL url = new URL("https://pokeapi.co/api/v2/pokemon/?limit=100");
-            HttpURLConnection con = (HttpURLConnection) url.openConnection();
-            con.setRequestMethod("GET");
+            // Generar 3 IDs aleatorios de Pokémon
+            Random random = new Random();
+            int[] pokemonIds = {random.nextInt(151) + 1, random.nextInt(151) + 1, random.nextInt(151) + 1};
 
-            BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
-            String inputLine;
-            StringBuilder response = new StringBuilder();
-            while ((inputLine = in.readLine()) != null) {
-                response.append(inputLine);
-            }
-            in.close();
+            for (int id : pokemonIds) {
+                // Realizar una solicitud GET a la PokeAPI para obtener información sobre el Pokémon
+                URL url = new URL("https://pokeapi.co/api/v2/pokemon/" + id);
+                HttpURLConnection con = (HttpURLConnection) url.openConnection();
+                con.setRequestMethod("GET");
 
-            // Analizar la respuesta JSON
-            JSONObject jsonResponse = new JSONObject(response.toString());
-            JSONArray results = jsonResponse.getJSONArray("results");
+                BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+                String inputLine;
+                StringBuilder response = new StringBuilder();
+                while ((inputLine = in.readLine()) != null) {
+                    response.append(inputLine);
+                }
+                in.close();
 
-            // Crear una lista de nombres y URL de imágenes de frente de Pokémon
-            List<String> pokemonNames = new ArrayList<>();
-            List<String> pokemonFrontImages = new ArrayList<>();
-            for (int i = 0; i < results.length(); i++) {
-                JSONObject pokemon = results.getJSONObject(i);
-                String name = pokemon.getString("name");
-                String imageUrl = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/" + (i + 1) + ".png";
-                pokemonNames.add(name);
-                pokemonFrontImages.add(imageUrl);
-            }
+                // Analizar la respuesta JSON
+                JSONObject jsonResponse = new JSONObject(response.toString());
+                String name = jsonResponse.getString("name");
+                String imageUrl = jsonResponse.getJSONObject("sprites").getString("front_default");
 
-            // Seleccionar tres Pokémon aleatorios
-            for (int i = 0; i < 3; i++) {
-                int randomIndex = (int) (Math.random() * pokemonNames.size());
-                selectedPokemonNames.add(pokemonNames.get(randomIndex));
-                selectedPokemonImages.add(pokemonFrontImages.get(randomIndex));
-                pokemonNames.remove(randomIndex);
-                pokemonFrontImages.remove(randomIndex);
+                // Agregar el nombre y la imagen del Pokémon a las listas
+                selectedPokemonNames.add(name);
+                selectedPokemonImages.add(imageUrl);
             }
 
             // Crear y mostrar la ventana de selección de Pokémon
             PokemonSelectionWindow selectionWindow = new PokemonSelectionWindow(selectedPokemonNames, selectedPokemonImages);
-            selectedPokemonNames.clear(); // Limpiar la lista después de mostrar la ventana
-
+            
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
-
-    public String getSelectedPokemon() {
-        return selectedPokemonNames.isEmpty() ? null : selectedPokemonNames.get(0);
+    
+    public List<String> getSelectedPokemonNames() {
+        return selectedPokemonNames;
     }
+}
 
-    public static void main(String[] args) {
-        PokemonSelection pokemonSelection = new PokemonSelection();
-        pokemonSelection.selectPokemon();
 
-        String selectedPokemon = pokemonSelection.getSelectedPokemon();
-        if (selectedPokemon != null) {
-            System.out.println("Has seleccionado el Pokémon: " + selectedPokemon);
+class PokemonSelectionWindow extends JDialog {
+    public PokemonSelectionWindow(List<String> pokemonNames, List<String> pokemonFrontImages) {
+        // Configuración básica de la ventana
+        setTitle("Pokemon");
+        setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
+        setSize(800, 650);
+        setModal(true);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+                System.exit(0);
+            }
+        });
+
+        // Crear un panel principal con BoxLayout vertical
+        JPanel mainPanel = new JPanel();
+        mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
+        mainPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20)); // Añadir un margen
+
+        // Panel para el género
+        JPanel panelgenero = new JPanel();
+        panelgenero.setLayout(new BoxLayout(panelgenero, BoxLayout.X_AXIS));
+        
+        JLabel selectGender = new JLabel("Selecciona el género");
+        selectGender.setAlignmentX(Component.CENTER_ALIGNMENT);
+        mainPanel.add(selectGender);
+        
+        mainPanel.add(panelgenero);
+        JRadioButton masculino = new JRadioButton();
+        masculino.setText("Masculino");
+        panelgenero.add(masculino);
+        masculino.setSelected(true);
+        
+        JRadioButton femenino = new JRadioButton();
+        femenino.setText("Femenino");
+        panelgenero.add(femenino);
+        
+        ButtonGroup grupo = new ButtonGroup();
+        grupo.add(femenino);
+        grupo.add(masculino);
+
+        // Panel para las imágenes de los géneros
+        JPanel panelImageGender = new JPanel();
+        panelImageGender.setLayout(new BoxLayout(panelImageGender, BoxLayout.X_AXIS));
+        mainPanel.add(panelImageGender);
+        try {
+            BufferedImage boyImage = ImageIO.read(getClass().getResource("/player/boy_down_2.png"));
+            Image scaledBoyImage = boyImage.getScaledInstance(85, 85, Image.SCALE_SMOOTH); // Ajustar el tamaño a 100x100
+            JLabel boyImageLabel = new JLabel(new ImageIcon(scaledBoyImage));
+            panelImageGender.add(boyImageLabel);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+        try {
+            BufferedImage girlImage = ImageIO.read(getClass().getResource("/player/girl_down_1.png"));
+            Image scaledGirlImage = girlImage.getScaledInstance(100, 100, Image.SCALE_SMOOTH); // Ajustar el tamaño a 100x100
+            JLabel girlImageLabel = new JLabel(new ImageIcon(scaledGirlImage));
+            panelImageGender.add(girlImageLabel);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        
+        // Agregar JLabel "Estos son tus pokemons"
+        JLabel selectLabel = new JLabel("Estos son tus pokemons");
+        selectLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        mainPanel.add(selectLabel);
+
+        // Panel para las etiquetas de los Pokémon y sus imágenes
+        JPanel pokemonPanel = new JPanel();
+        pokemonPanel.setLayout(new GridLayout(0, 2, 20, 20)); // Dos columnas con espaciado
+        pokemonPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        // Agregar etiquetas e imágenes para cada Pokémon
+        for (int i = 0; i < pokemonNames.size(); i++) {
+            String pokemonName = pokemonNames.get(i);
+            String imageUrl = pokemonFrontImages.get(i);
+
+            // Crear una etiqueta para el Pokémon
+            JLabel pokemonLabel = new JLabel(pokemonName);
+            pokemonLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+            // Crear un panel para la imagen del Pokémon
+            JPanel imagePanel = new JPanel();
+            imagePanel.setLayout(new BorderLayout());
+
+            // Descargar la imagen del Pokémon y mostrarla en un JLabel
+            try {
+                URL url = new URL(imageUrl);
+                BufferedImage image = ImageIO.read(url);
+                JLabel imageLabel = new JLabel(new ImageIcon(image));
+                imagePanel.add(imageLabel, BorderLayout.CENTER);
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+
+            // Agregar la etiqueta y la imagen al panel de Pokémon
+            pokemonPanel.add(pokemonLabel);
+            pokemonPanel.add(imagePanel);
+        }
+
+        // Agregar el panel de Pokémon al panel principal
+        mainPanel.add(Box.createVerticalStrut(20)); // Añadir espacio
+        mainPanel.add(pokemonPanel);
+        // Crear un panel para los botones
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
+        buttonPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        // Crear el botón "Aceptar"
+        JButton acceptButton = new JButton("Aceptar");
+        acceptButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Player.gender = femenino.isSelected() ? "girl" : "boy";
+                PokemonSelectionWindow.this.dispose();
+                System.out.println("Has aceptado. El juego continuará.");
+            }
+        });
+        buttonPanel.add(acceptButton);
+
+        // Crear un espacio entre los botones
+        buttonPanel.add(Box.createRigidArea(new Dimension(10, 0)));
+
+        // Crear el botón "Cancelar"
+        JButton cancelButton = new JButton("Cancelar");
+        cancelButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Aquí puedes poner el código para salir del juego
+                System.exit(0);
+            }
+        });
+        buttonPanel.add(cancelButton);
+
+        // Agregar el panel de botones al panel principal
+        mainPanel.add(buttonPanel);
+
+        // Agregar el panel principal a la ventana
+        add(mainPanel);
+
+        // Ajustar el tamaño de la ventana automáticamente
+        pack();
+
+        // Centrar la ventana en la pantalla
+        setLocationRelativeTo(null);
+
+        // Hacer visible la ventana
+        setVisible(true);
     }
+
 }

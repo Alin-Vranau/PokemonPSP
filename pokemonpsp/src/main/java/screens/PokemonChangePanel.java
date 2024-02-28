@@ -79,7 +79,7 @@ public class PokemonChangePanel extends JPanel{
         buttonPokemon3Constraints.gridwidth = 1;
         buttonPokemon3Constraints.insets= i1;
 
-        // TODO Modificar esto por los pokemons de la lista del juegador
+        // TODO Modificar esto por los pokemons de la lista del jugador
         // Se crean los botones de seleccion de pokemon (Es un componente personalizado comprobar clase para mas detalles)
         Pokemon a = new Pokemon("Raichu");
         a.setActualHealth(0);
