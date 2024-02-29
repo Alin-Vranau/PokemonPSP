@@ -202,6 +202,7 @@ public class screenPokedex extends JFrame {
 
 		JTextPane txtpnHeight = new JTextPane();
 		txtpnHeight.setForeground(new Color(255, 233, 153));
+		txtpnHeight.setEditable(false);
 		txtpnHeight.setFont(new Font("Tahoma", Font.BOLD, 14));
 		txtpnHeight.setBackground(new Color(87, 77, 79));
 		txtpnHeight.setText("HEIGHT:");
@@ -210,6 +211,7 @@ public class screenPokedex extends JFrame {
 
 		JTextPane txtpnWeight = new JTextPane();
 		txtpnWeight.setText("WEIGHT:");
+		txtpnWeight.setEditable(false);
 		txtpnWeight.setForeground(new Color(255, 233, 153));
 		txtpnWeight.setFont(new Font("Tahoma", Font.BOLD, 14));
 		txtpnWeight.setBackground(new Color(87, 77, 79));
@@ -218,6 +220,7 @@ public class screenPokedex extends JFrame {
 
 		JTextPane txtpnHabitat = new JTextPane();
 		txtpnHabitat.setText("HABITAT:");
+		txtpnHabitat.setEditable(false);
 		txtpnHabitat.setForeground(new Color(255, 233, 153));
 		txtpnHabitat.setFont(new Font("Tahoma", Font.BOLD, 14));
 		txtpnHabitat.setBackground(new Color(87, 77, 79));
@@ -226,6 +229,7 @@ public class screenPokedex extends JFrame {
 
 		JTextPane txtpnTypo = new JTextPane();
 		txtpnTypo.setText("TYPO:");
+		txtpnTypo.setEditable(false);
 		txtpnTypo.setForeground(new Color(255, 233, 153));
 		txtpnTypo.setFont(new Font("Tahoma", Font.BOLD, 14));
 		txtpnTypo.setBackground(new Color(87, 77, 79));

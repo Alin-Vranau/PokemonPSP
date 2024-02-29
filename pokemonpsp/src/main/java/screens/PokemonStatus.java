@@ -53,7 +53,8 @@ public class PokemonStatus extends JPanel{
         name.setText(pokemon.getName());
         name.setPreferredSize(new Dimension(width, componentsHeight));
         name.setMinimumSize(new Dimension(width, componentsHeight));
-        adjustFontSize(name, 0.3);
+        name.setFont(new Font(name.getFont().getName(), Font.PLAIN, 20));
+        //adjustFontSize(name, 0.3);
         
         // Restricciones de posición de la barra de vida del pokemon
         Insets i2 = new Insets(0, 0, 0, 35);

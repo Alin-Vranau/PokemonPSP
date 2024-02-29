@@ -2,6 +2,8 @@ package main;
 
 import javax.swing.*;
 
+import objects.Type;
+
 public class main {
     public static void main(String[] args) {
         // Crear la ventana principal del juego
@@ -9,7 +11,7 @@ public class main {
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         window.setResizable(false);
         window.setTitle("Pokemon");
-
+        Type.initializeTypes();
         // Crear el panel del juego y pasarlo a la ventana
         GamePanel gamePanel = new GamePanel(window);
         window.add(gamePanel);

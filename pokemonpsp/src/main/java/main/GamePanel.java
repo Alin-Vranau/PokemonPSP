@@ -42,6 +42,8 @@ public class GamePanel extends JPanel implements Runnable {
 	Thread gameThread;
 	public CollisionChecker cChecker = new CollisionChecker(this);
 	public Player player;
+
+	private boolean runThread = true;
 	
 	public GamePanel(JFrame window) {
 		this.window = window;
@@ -82,7 +84,7 @@ public class GamePanel extends JPanel implements Runnable {
 		long currentTime;
 		long timer = 0;
 		int drawCount = 0;
-		while (gameThread != null) {
+		while (gameThread != null && runThread) {
 			currentTime = System.nanoTime();
 			delta += (currentTime - lastTime) / drawInterval;
 			timer += (currentTime - lastTime);
@@ -100,6 +102,13 @@ public class GamePanel extends JPanel implements Runnable {
 				timer = 0;
 			}
 		}
+
+		runThread = true;
+	}
+
+	public void stopThread(){
+		runThread = false;
+		
 	}
 
 	public void update() {
@@ -135,9 +144,9 @@ public class GamePanel extends JPanel implements Runnable {
 	}	
 
 
-	public void openBattlePanel() {
+	public void openBattlePanel(NPC_Personaje1 npc) {
         // Crear el panel de batalla // TODO modificar
-        battlePanel = new BattlePanel(window.getWidth(), window.getHeight(), null, null);
+        battlePanel = new BattlePanel(window.getWidth(), window.getHeight(), player, npc);
         // Añadir el panel de batalla a la ventana
         window.add(battlePanel);
         window.pack();

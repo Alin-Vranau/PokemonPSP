@@ -11,9 +11,11 @@ import java.util.List;
 import javax.imageio.ImageIO;
 import javax.swing.SwingUtilities;
 
+import handlers.GameHandler;
 import main.GamePanel;
 import main.KeyHandler;
 import main.PokemonSelection;
+import objects.Pokemon;
 import screens.screenPokedex;
 
 public class Player extends Entity {
@@ -31,6 +33,8 @@ public class Player extends Entity {
 
 		this.keyH = keyH;
 		this.pokemonNames = pokemonSelection.getSelectedPokemonNames();
+
+		super.createPokemonTeam(pokemonNames);
 
 		screenX = gp.screenWidth / 2 - (gp.tileSize/2);
 		screenY = gp.screenHeight / 2 - (gp.tileSize/2);
@@ -83,6 +87,12 @@ public class Player extends Entity {
 		}
 	}
 
+	public void healPokemons() {
+		for (Pokemon pokemon : pokemonTeam) {
+			pokemon.setActualHealth(pokemon.getHealth());
+		}
+	}
+
 	public void update() {
 		if (keyH.pPressed) {
 			if (pokedex == null) {
@@ -127,9 +137,12 @@ public class Player extends Entity {
 					if (checkCollisionWithNPC(nextX, nextY, npc)) {
 						collisionOn = true;
 						if (keyH.ePressed && !battlePanelOpened) {
-							gp.setVisible(false);
-							gp.openBattlePanel();
+							//gp.setVisible(false);
+							//gp.openBattlePanel(npc);
+							GameHandler.hideGamePanel();
+							GameHandler.showBattlePanel(npc);
 							battlePanelOpened = true;
+							keyH.reset();
 						}
 						break;
 					}
@@ -157,6 +170,7 @@ public class Player extends Entity {
 				pokedex.setLocationRelativeTo(null); // Esto centrará la ventana
 				pokedex.setVisible(true);
 				pokedexPanelOpened = true;
+				keyH.reset();
 			} else {
 				pokedex.setVisible(false);
 				pokedexPanelOpened = false;
@@ -209,5 +223,10 @@ public class Player extends Entity {
 			break;
 		}
 		g2.drawImage(image, screenX, screenY, gp.tileSize, gp.tileSize, null);
+	}
+
+	public void pokemonBattleFinished() {
+		healPokemons();
+		battlePanelOpened = false;
 	}
 }

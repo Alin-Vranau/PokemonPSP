@@ -12,6 +12,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
@@ -21,6 +22,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
+import entity.Player;
 import objects.Pokemon;
 
 /** Clase que genera la pantalla para poder cambiar de pokemon durante un combate */
@@ -34,7 +36,7 @@ public class PokemonChangePanel extends JPanel{
         win.setTitle("Cambiar Pokemon");
 
 
-        JPanel  panel= new PokemonChangePanel(700, 500, true, null);
+        JPanel  panel= new PokemonChangePanel(700, 500, null, true, null);
 
         win.add(panel);
 
@@ -44,7 +46,7 @@ public class PokemonChangePanel extends JPanel{
 
     }
 
-    public PokemonChangePanel(int width, int height, boolean defeated, BattlePanel battlePanel) {
+    public PokemonChangePanel(int width, int height, Player player, boolean defeated, BattlePanel battlePanel) {
         
         setLayout(new BorderLayout());
 
@@ -81,11 +83,17 @@ public class PokemonChangePanel extends JPanel{
 
         // TODO Modificar esto por los pokemons de la lista del jugador
         // Se crean los botones de seleccion de pokemon (Es un componente personalizado comprobar clase para mas detalles)
-        Pokemon a = new Pokemon("Raichu");
-        a.setActualHealth(0);
-        PokemonChangeButton buttonPokemon1 = new PokemonChangeButton(width,(int) (height*0.8/3), a, battlePanel);
-        PokemonChangeButton buttonPokemon2 = new PokemonChangeButton(width,(int) (height*0.8/3), new Pokemon("Charmander"), battlePanel);
-        PokemonChangeButton buttonPokemon3 = new PokemonChangeButton(width,(int) (height*0.8/3), new Pokemon("Charizard"), battlePanel);
+        //Pokemon a = new Pokemon("Raichu");
+        //a.setActualHealth(0);
+        //PokemonChangeButton buttonPokemon1 = new PokemonChangeButton(width,(int) (height*0.8/3), a, battlePanel);
+        //PokemonChangeButton buttonPokemon2 = new PokemonChangeButton(width,(int) (height*0.8/3), new Pokemon("Charmander"), battlePanel);
+        //PokemonChangeButton buttonPokemon3 = new PokemonChangeButton(width,(int) (height*0.8/3), new Pokemon("Charizard"), battlePanel);
+        
+        ArrayList<Pokemon> pokemonsJugador = player.getPokemonTeam();
+
+        PokemonChangeButton buttonPokemon1 = new PokemonChangeButton(width,(int) (height*0.8/3), pokemonsJugador.get(0), battlePanel);
+        PokemonChangeButton buttonPokemon2 = new PokemonChangeButton(width,(int) (height*0.8/3), pokemonsJugador.get(1), battlePanel);
+        PokemonChangeButton buttonPokemon3 = new PokemonChangeButton(width,(int) (height*0.8/3), pokemonsJugador.get(2), battlePanel);
         
         pokemonPanel.add(buttonPokemon1, buttonPokemon1Constraints);
         pokemonPanel.add(buttonPokemon2, buttonPokemon2Constraints);

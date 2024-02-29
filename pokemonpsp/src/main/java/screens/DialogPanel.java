@@ -40,7 +40,7 @@ public class DialogPanel extends JPanel implements Runnable{
         setLayout(new BorderLayout());
 
         // Se establece un tamaño de fuente en función del alto de la pantalla
-        int fontSize = (height <= 150) ? 20 : (int) Math.round(20.0 *(height/1000.0 + 1.3));
+        int fontSize = (height <= 150) ? 25 : (int) Math.round(20.0 *(height/1000.0 + 1.3));
        
         // Codigo HTML utilizado en la etiqueta para poder dividir el texto en distintos parrafos cuando un diálogo es muy largo
         INICIO_ETIQUETA = "<html><p style=\"width:" + Math.round(width*0.74) +"px\">";
@@ -93,6 +93,7 @@ public class DialogPanel extends JPanel implements Runnable{
      * Método que se ejecuta al finalizar el dialogo y ejecuta las acciones siguientes en el panel de lucha
      */
     private void endDialog() {
+        fightPanel.dialogPanel.setVisible(false);
         fightPanel.postDialogAction(dialogType);
     }
 
