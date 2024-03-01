@@ -19,6 +19,8 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+
 import javax.swing.JTable;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.BorderFactory;
@@ -33,20 +35,29 @@ import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
 import javax.swing.JTextPane;
 
+import handlers.SqliteHandler;
+
 public class screenPokedex extends JFrame {
+	// Nombre de las columnas de la tabla del listado de pokemons
 	private String[] nombresColumnas = { "Nº", "Nombre" };
+	// Variable para guardar el numero y nombre de los pokemons
 	private static Object[][] listaPokemons = new Object[151][];
 	private static final long serialVersionUID = 1L;
+	// Panel principal
 	private JPanel contentPane;
+	// Clase para acceder a la base de datos
+	SqliteHandler sHandler = new SqliteHandler();
+	// Lista de pokemons vistos
+	ArrayList<Integer> pokemonSeen = sHandler.getPokemonsSeen();
+	// Lista de pokemons derrotados
+	ArrayList<Integer> pokemonDefeacted = sHandler.getPokemonsDefeated();
 
 	/**
-	 * Launch the application.
+	 * Lanza la aplicacion de la pokedex
 	 */
 	public static void main(String[] args) {
 
 		llenarListaPokemon();
-
-		// JSONArray
 
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
@@ -60,6 +71,9 @@ public class screenPokedex extends JFrame {
 		});
 	}
 
+	/**
+	 * Llena la lista de pokemons con los nombres y numeros de los pokemons
+	 */
 	public static void llenarListaPokemon() {
 		try {
 			// Realizar una solicitud GET a la PokeAPI para obtener información sobre los
@@ -67,7 +81,7 @@ public class screenPokedex extends JFrame {
 			URL url = new URL("https://pokeapi.co/api/v2/pokemon/?limit=151");
 			HttpURLConnection con = (HttpURLConnection) url.openConnection();
 			con.setRequestMethod("GET");
-
+			// Leer la respuesta de la API
 			BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
 			String inputLine;
 			StringBuilder response = new StringBuilder();
@@ -80,11 +94,13 @@ public class screenPokedex extends JFrame {
 			JSONObject jsonResponse = new JSONObject(response.toString());
 			JSONArray results = jsonResponse.getJSONArray("results");
 
+			// Llenar la lista de pokemons
 			for (int i = 0; i < 151; i++) {
 
-				listaPokemons[i] = new Object[2];
+				listaPokemons[i] = new Object[4];
 				listaPokemons[i][0] = i + 1;
 				listaPokemons[i][1] = results.getJSONObject(i).getString("name").toUpperCase();
+
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -92,7 +108,7 @@ public class screenPokedex extends JFrame {
 	}
 
 	/**
-	 * Create the frame.
+	 * Crea la ventana de la pokedex
 	 */
 	public screenPokedex() {
 		setResizable(false);
@@ -144,7 +160,7 @@ public class screenPokedex extends JFrame {
 		lblNomPokemon.setForeground(new Color(87, 77, 79));
 		lblNomPokemon.setHorizontalAlignment(SwingConstants.CENTER);
 		lblNomPokemon.setFont(new Font("Tahoma", Font.BOLD, 28));
-		lblNomPokemon.setBounds(212, 11, 260, 39);
+		lblNomPokemon.setBounds(240, 11, 232, 39);
 		pnContent.add(lblNomPokemon);
 
 		JLabel lblNumPokemon = new JLabel("Nº. 1");
@@ -202,7 +218,6 @@ public class screenPokedex extends JFrame {
 
 		JTextPane txtpnHeight = new JTextPane();
 		txtpnHeight.setForeground(new Color(255, 233, 153));
-		txtpnHeight.setEditable(false);
 		txtpnHeight.setFont(new Font("Tahoma", Font.BOLD, 14));
 		txtpnHeight.setBackground(new Color(87, 77, 79));
 		txtpnHeight.setText("HEIGHT:");
@@ -211,7 +226,6 @@ public class screenPokedex extends JFrame {
 
 		JTextPane txtpnWeight = new JTextPane();
 		txtpnWeight.setText("WEIGHT:");
-		txtpnWeight.setEditable(false);
 		txtpnWeight.setForeground(new Color(255, 233, 153));
 		txtpnWeight.setFont(new Font("Tahoma", Font.BOLD, 14));
 		txtpnWeight.setBackground(new Color(87, 77, 79));
@@ -220,7 +234,6 @@ public class screenPokedex extends JFrame {
 
 		JTextPane txtpnHabitat = new JTextPane();
 		txtpnHabitat.setText("HABITAT:");
-		txtpnHabitat.setEditable(false);
 		txtpnHabitat.setForeground(new Color(255, 233, 153));
 		txtpnHabitat.setFont(new Font("Tahoma", Font.BOLD, 14));
 		txtpnHabitat.setBackground(new Color(87, 77, 79));
@@ -229,7 +242,6 @@ public class screenPokedex extends JFrame {
 
 		JTextPane txtpnTypo = new JTextPane();
 		txtpnTypo.setText("TYPO:");
-		txtpnTypo.setEditable(false);
 		txtpnTypo.setForeground(new Color(255, 233, 153));
 		txtpnTypo.setFont(new Font("Tahoma", Font.BOLD, 14));
 		txtpnTypo.setBackground(new Color(87, 77, 79));
@@ -242,8 +254,9 @@ public class screenPokedex extends JFrame {
 		contentPane.add(pnTable);
 		pnTable.setLayout(null);
 
-		// Crear la tabla
-		JTable pokeTable = new JTable(new DefaultTableModel(listaPokemons, nombresColumnas)) {
+		// Crea la tabla con el listado de pokemons
+		JTable pokeTable = new JTable(new DefaultTableModel(listaPokemons,
+				nombresColumnas)) {
 			@Override
 			public Component prepareRenderer(TableCellRenderer renderer, int row, int column) {
 				Component c = super.prepareRenderer(renderer, row, column);
@@ -262,7 +275,10 @@ public class screenPokedex extends JFrame {
 			}
 		};
 
-		// JTable pokeTable = new JTable (listaPokemons, nombresColumnas);
+		// Tabla usada para cuando se quiere editar la ventana con el WindowBuilder,
+		// descomentar y comentar la de arriba. Tambien hay que comentar
+		// comentar la personalizacion del scroll de mas abajo comentado con ScrollUI
+		// JTable pokeTable = new JTable(listaPokemons, nombresColumnas);
 		pokeTable.setFont(new Font("Tahoma", Font.BOLD, 12));
 		pokeTable.setBackground(new Color(150, 144, 145));
 		pokeTable.setSelectionBackground(new Color(87, 77, 79));
@@ -283,6 +299,9 @@ public class screenPokedex extends JFrame {
 
 		JScrollPane scroll = new JScrollPane(pokeTable);
 		scroll.setBounds(0, 0, 154, 345);
+
+		// ScrollUI Personalizacion del scroll, comentar para editar con WindowBuilder,
+		// comentar tambien la tabla de mas arriba
 		scroll.getVerticalScrollBar().setUI(new BasicScrollBarUI() {
 			@Override
 			protected void configureScrollBarColors() {
@@ -305,6 +324,7 @@ public class screenPokedex extends JFrame {
 			}
 		});
 
+		// Personalizacion del scroll
 		scroll.setHorizontalScrollBarPolicy(
 				ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		scroll.setBorder(BorderFactory.createLineBorder(new Color(87, 77, 79), 2));
@@ -312,28 +332,63 @@ public class screenPokedex extends JFrame {
 		scroll.setCorner(JScrollPane.UPPER_RIGHT_CORNER, panelRellenoScroll);
 		pnTable.add(scroll);
 
+		// Inicia la pokedex cargando el primer pokemon
 		ImageIcon bulbasaur = null;
 		try {
 			bulbasaur = new ImageIcon(new URL(
 					"https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/showdown/1.gif"));
 		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		lblImagen.setIcon(bulbasaur);
 		textDescription.setText("Una rara semilla le fue plantada en el lomo al nacer.\r\n"
 				+ "La planta brota y crece con este Pokémon.");
 
+		JLabel lblVisto = new JLabel("");
+		lblVisto.setForeground(new Color(87, 77, 79));
+		lblVisto.setBounds(155, 12, 40, 40);
+		pnContent.add(lblVisto);
+
+		JLabel lblVencido = new JLabel("");
+		lblVencido.setForeground(new Color(87, 77, 79));
+		lblVencido.setBounds(212, 12, 40, 40);
+		pnContent.add(lblVencido);
+
+		// Comprueba si el pokemon esta visto o derrotado y pone el icono
+		// correspondiente al cargar el primer pokemon
+		if (pokemonSeen.contains(1)) {
+			lblVisto.setFont(new Font("", Font.BOLD, 30));
+			lblVisto.setText("👁️");
+		}
+
+		if (pokemonDefeacted.contains(1)) {
+			lblVencido.setFont(new Font("", Font.BOLD, 30));
+			lblVencido.setText("⚔");
+		}
+
+		// Añade un listener a la tabla para que al seleccionar un pokemon se cargue su
+		// informacion en todos los campos
 		pokeTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
 			@Override
 			public void valueChanged(ListSelectionEvent e) {
 				if (!e.getValueIsAdjusting()) {
+					// Obtiene el numero de la celda seleccionada
 					int selectedRow = pokeTable.getSelectedRow();
 					lblNumPokemon.setText("Nº. " + listaPokemons[selectedRow][0]);
 					lblNomPokemon.setText((String) listaPokemons[selectedRow][1]);
 
 					try {
-
+						// Comprueba si el pokemon esta visto o derrotado y pone el icono
+						if (pokemonSeen.contains(selectedRow + 1)) {
+							lblVisto.setFont(new Font("", Font.BOLD, 30));
+							lblVisto.setText("👁️");
+						}
+						if (pokemonDefeacted.contains(selectedRow + 1)) {
+							lblVencido.setFont(new Font("", Font.BOLD, 30));
+							lblVencido.setText("⚔");
+						}
+						// Realizar solicitud GET a la PokeAPI para obtener información sobre los
+						// Pokémon
 						URL urlPokemon = new URL("https://pokeapi.co/api/v2/pokemon/" + (selectedRow + 1));
 						URL urlDescription = new URL("https://pokeapi.co/api/v2/pokemon-species/" + (selectedRow + 1));
 						HttpURLConnection conPokemon = (HttpURLConnection) urlPokemon.openConnection();
@@ -359,7 +414,7 @@ public class screenPokedex extends JFrame {
 						}
 						inSpecies.close();
 
-						// Imagen
+						// cargar la imagen del pokemon
 						JSONObject jsonResponse = new JSONObject(responsePokemon.toString());
 						String frontDefaultGif = jsonResponse.getJSONObject("sprites").getJSONObject("other")
 								.getJSONObject("showdown").getString("front_default");
@@ -371,12 +426,11 @@ public class screenPokedex extends JFrame {
 						ImageIcon imgPokemon = new ImageIcon(frontDefaultGifUrl);
 						lblImagen.setIcon(imgPokemon);
 
-						// Datos
+						// Altura y peso del pokemon
 						textHeight.setText((jsonResponse.getDouble("height") / 10) + "m");
 						textWeight.setText((jsonResponse.getDouble("weight") / 10) + "kg");
 
-						// tipos
-
+						// Tipos de elemento del pokemon
 						String tipo1 = jsonResponse.getJSONArray("types").getJSONObject(0).getJSONObject("type")
 								.getString("name").toUpperCase();
 						String tipo2 = null;
@@ -392,7 +446,7 @@ public class screenPokedex extends JFrame {
 						textType2.setText(tipo2);
 						textType2.setBackground(colorTipo(tipo2));
 
-						// Descripcion
+						// Descripcion del pokemon
 						JSONObject jsonResponseSpecies = new JSONObject(responseSpecies.toString());
 						String descrption;
 						int posicion = 0;
@@ -407,7 +461,7 @@ public class screenPokedex extends JFrame {
 						descrption = jsonResponseSpecies.getJSONArray("flavor_text_entries").getJSONObject(posicion)
 								.getString("flavor_text");
 						textDescription.setText(descrption);
-						// Habitat
+						// Habitat del pokemon
 						textHabitat
 								.setText(jsonResponseSpecies.getJSONObject("habitat").getString("name").toUpperCase());
 
@@ -419,6 +473,14 @@ public class screenPokedex extends JFrame {
 		});
 	}
 
+	/**
+	 * Esta funcion recibe el nombre de un elemento en ingles y devuelve un color
+	 * asignado
+	 * a ese elemento.
+	 * 
+	 * @param nombre del tipo de elemento
+	 * @return color que corresponde al elemento pasado
+	 */
 	public Color colorTipo(String tipo) {
 		Color color = new Color(255, 217, 82);
 		switch (tipo) {
