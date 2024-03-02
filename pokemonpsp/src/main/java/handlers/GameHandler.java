@@ -17,12 +17,17 @@ public class GameHandler {
     private static GamePanel gamePanel;
     private static BattlePanel battlePanel;
 
+    public static SqliteHandler sqliteHandler;
+
     public GameHandler() {
 
         mainWindow = new JFrame();
         mainWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         mainWindow.setResizable(false);
         mainWindow.setTitle("Pokemon");
+
+        sqliteHandler = new SqliteHandler();
+
         Type.initializeTypes();
         // Crear el panel del juego y pasarlo a la ventana
         gamePanel = new GamePanel(mainWindow);
@@ -69,6 +74,7 @@ public class GameHandler {
         mainWindow.remove(battlePanel);
         battlePanel.setVisible(false);
     }
+
 
 
     public static void main(String[] args) {

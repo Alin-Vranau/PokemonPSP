@@ -35,6 +35,7 @@ import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
 import javax.swing.JTextPane;
 
+import handlers.GameHandler;
 import handlers.SqliteHandler;
 
 public class screenPokedex extends JFrame {
@@ -45,12 +46,12 @@ public class screenPokedex extends JFrame {
 	private static final long serialVersionUID = 1L;
 	// Panel principal
 	private JPanel contentPane;
-	// Clase para acceder a la base de datos
-	SqliteHandler sHandler = new SqliteHandler();
+	// Clase para acceder a la base de datos (MODIF: Sin uso)
+	SqliteHandler sHandler = GameHandler.sqliteHandler;
 	// Lista de pokemons vistos
-	ArrayList<Integer> pokemonSeen = sHandler.getPokemonsSeen();
+	public static ArrayList<Integer> pokemonSeen = GameHandler.sqliteHandler.getPokemonsSeen();
 	// Lista de pokemons derrotados
-	ArrayList<Integer> pokemonDefeacted = sHandler.getPokemonsDefeated();
+	public static ArrayList<Integer> pokemonDefeacted = GameHandler.sqliteHandler.getPokemonsDefeated();
 
 	/**
 	 * Lanza la aplicacion de la pokedex
@@ -382,10 +383,14 @@ public class screenPokedex extends JFrame {
 						if (pokemonSeen.contains(selectedRow + 1)) {
 							lblVisto.setFont(new Font("", Font.BOLD, 30));
 							lblVisto.setText("👁️");
+						} else {
+							lblVisto.setText("");
 						}
 						if (pokemonDefeacted.contains(selectedRow + 1)) {
 							lblVencido.setFont(new Font("", Font.BOLD, 30));
 							lblVencido.setText("⚔");
+						} else {
+							lblVencido.setText("");
 						}
 						// Realizar solicitud GET a la PokeAPI para obtener información sobre los
 						// Pokémon

@@ -106,6 +106,8 @@ public class Player extends Entity {
 					}
 				});
 			}
+			screenPokedex.pokemonSeen = GameHandler.sqliteHandler.getPokemonsSeen();
+			screenPokedex.pokemonDefeacted = GameHandler.sqliteHandler.getPokemonsDefeated();
 			// Alternar la visibilidad de la Pokedex.
 			togglePokedexVisibility();
 			keyH.pPressed = false; // Asegurar que la pulsación se maneje una sola vez.

@@ -396,6 +396,9 @@ public class BattlePanel extends JPanel {
             // si no se muestra un dialogo para indicar que el pokemon ha sido derrotado
             case PLAYER_ATTACK -> {
                                     if (enemyPokemon.getActualHealth() == 0) {
+                                        // Modificar la base de datos para añadir el pokemon como derrotado
+                                        GameHandler.sqliteHandler.setPokemonAsDefeated(enemyPokemon.getId());
+                                        
                                         enemyPokemonsDefeated++;
                                         showDialog(String.format("El %s enemigo se ha debilitado", enemyPokemon.getName()), DialogType.ENEMY_POKEMON_DEFEATED);
                                     } else{
@@ -462,6 +465,9 @@ public class BattlePanel extends JPanel {
      * @param pokemon - El pokemon enemigo
      */
     private void placeEnemyPokemon(Pokemon pokemon) {
+
+        // Modificar la base de datos para añadir el pokemon como visto
+        GameHandler.sqliteHandler.setPokemonAsSeen(pokemon.getId());
         
         // Si ya habia un pokemon se elimina la imagen de este y su vida
         if (enemyStatus != null) {

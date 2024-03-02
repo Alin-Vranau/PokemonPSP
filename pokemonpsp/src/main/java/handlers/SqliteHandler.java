@@ -66,12 +66,11 @@ public class SqliteHandler {
     private boolean pokemonExists(int pokemonID) {
         boolean exists = false;
         
-        String query = "select count(*) from ? where id = ?";
+        String query = "select count(*) from pokedex where pokemon_id = ?";
 
         try {
             PreparedStatement statement = connection.prepareStatement(query);
-            statement.setString(1, pokedexBD);
-            statement.setInt(2, pokemonID);
+            statement.setInt(1, pokemonID);
 
             ResultSet rs = statement.executeQuery();
             rs.next();
@@ -89,12 +88,11 @@ public class SqliteHandler {
     }
 
     private void insertPokemon(int pokemonID) {
-        String query = "insert into ?(pokemon_id, visto, derrotado) values (?, 0, 0)";
+        String query = "insert into pokedex(pokemon_id, visto, derrotado) values (?, 0, 0)";
 
         try {
             PreparedStatement statement = connection.prepareStatement(query);
-            statement.setString(1, pokedexBD);
-            statement.setInt(2, pokemonID);
+            statement.setInt(1, pokemonID);
 
             statement.executeUpdate();
             statement.close();
@@ -109,12 +107,11 @@ public class SqliteHandler {
             insertPokemon(pokemonID);
         }
 
-        String query = "update ? set visto = 1 where pokemon_id = ?";
+        String query = "update pokedex set visto = 1 where pokemon_id = ?";
 
         try {
             PreparedStatement statement = connection.prepareStatement(query);
-            statement.setString(1, pokedexBD);
-            statement.setInt(2, pokemonID);
+            statement.setInt(1, pokemonID);
 
             statement.executeUpdate();
             statement.close();
@@ -130,12 +127,11 @@ public class SqliteHandler {
             insertPokemon(pokemonID);
         }
 
-        String query = "update ? set derrotado = 1 where pokemon_id = ?";
+        String query = "update pokedex set derrotado = 1 where pokemon_id = ?";
 
         try {
             PreparedStatement statement = connection.prepareStatement(query);
-            statement.setString(1, pokedexBD);
-            statement.setInt(2, pokemonID);
+            statement.setInt(1, pokemonID);
 
             statement.executeUpdate();
             statement.close();
@@ -148,12 +144,10 @@ public class SqliteHandler {
     public ArrayList<Integer> getPokemonsSeen() {
         ArrayList<Integer> output = new ArrayList<>();
 
-        String query = "select id from ? where visto = 1";
+        String query = "select pokemon_id from pokedex where visto = 1";
 
         try {
             PreparedStatement statement = connection.prepareStatement(query);
-            statement.setString(1, pokedexBD);
-
             ResultSet rs = statement.executeQuery();
 
             while (rs.next()) {
@@ -172,11 +166,10 @@ public class SqliteHandler {
     public ArrayList<Integer> getPokemonsDefeated() {
         ArrayList<Integer> output = new ArrayList<>();
 
-        String query = "select id from ? where derrotado = 1";
+        String query = "select pokemon_id from pokedex where derrotado = 1";
 
         try {
             PreparedStatement statement = connection.prepareStatement(query);
-            statement.setString(1, pokedexBD);
 
             ResultSet rs = statement.executeQuery();
 
