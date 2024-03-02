@@ -35,6 +35,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.HashSet;
 
 public class BattlePanel extends JPanel {
 
@@ -248,9 +249,17 @@ public class BattlePanel extends JPanel {
         // Array que contendrá los botones de ataque
         JButton[] attackButtons = new JButton[4];
         int index = 0;
+        HashSet<Move> moves = null;
+
+        //Para evitar que haya pokemons sin ningun ataque (Puesto por Ditto que solo tiene un ataque que es transformarse en el pokemon enemigo)
+        if (playerPokemon.getMoves().size() == 0) {
+            moves = enemyPokemon.getMoves();
+        } else {
+            moves = playerPokemon.getMoves();
+        }
 
         // Se crea un boton por cada movimiento del pokemon
-        for (Move move : playerPokemon.getMoves()) {
+        for (Move move : moves) {
             JButton attack = new JButton(move.getName());
             attack.setFont(new Font(attack.getFont().getName(), Font.PLAIN, 18));
             attack.setToolTipText("Tipo: " + Type.typesList.get(move.getTypeID()-1).getName());
@@ -273,7 +282,7 @@ public class BattlePanel extends JPanel {
         }
 
         // Si el pokemon tiene menos de 4 ataques se añaden botones inactivos
-        for (int i = 4; i > playerPokemon.getMoves().size(); i--) {
+        for (int i = 4; i > moves.size(); i--) {
 
             JButton attack = new JButton("-----");
             attack.setFont(new Font(attack.getFont().getName(), Font.PLAIN, 18));
@@ -329,18 +338,30 @@ public class BattlePanel extends JPanel {
      */
     public void enemyAttack() {
 
+        // Variable que indica el ataque a realizar
         int randomAttack = (int) (Math.random()*enemyPokemon.getMoves().size());
 
-            for (Move enemyMove : enemyPokemon.getMoves()) {
-                if (randomAttack == 0) {
-                    int attackOutput = enemyPokemon.attack(enemyMove, playerPokemon);
-                    playerStatus.updateHealth();
+        HashSet<Move> moves = null;
 
-                    String attackStatus = (attackOutput == 1) ? "Ha fallado" : (attackOutput == 2) ? "El ataque no afecta a " + playerPokemon.getName() : "";
-                    showDialog(String.format("El %s enemigo ha usado %s. %s", enemyPokemon.getName(), enemyMove.getName(), attackStatus), DialogType.ENEMY_ATTACK);
-                    break;
-                }
-                randomAttack--;
+        if (enemyPokemon.getMoves().size() == 0) {
+            moves = playerPokemon.getMoves();
+        } else {
+            moves = enemyPokemon.getMoves();
+        }
+
+        // Se recorre la lista de ataques
+        for (Move enemyMove : moves) {
+            // Como el conjunto de ataques es un set se va recorriendo hasta que la variable de randomAttack llega a 0
+            if (randomAttack == 0) {
+                int attackOutput = enemyPokemon.attack(enemyMove, playerPokemon);
+                playerStatus.updateHealth();
+
+                String attackStatus = (attackOutput == 1) ? "Ha fallado" : (attackOutput == 2) ? "El ataque no afecta a " + playerPokemon.getName() : "";
+                showDialog(String.format("El %s enemigo ha usado %s. %s", enemyPokemon.getName(), enemyMove.getName(), attackStatus), DialogType.ENEMY_ATTACK);
+                break;
+            }
+            // Se resta uno a la variable randomAttack para que cuando llegue a 0 se realice el ataque que toca
+            randomAttack--;
             }
 
     }
@@ -382,12 +403,14 @@ public class BattlePanel extends JPanel {
                                         enemyAttack();}}
             // Si el dialogo es para indicar que el pokemon del jugador ha sido derrotado se llama a la funcion que muestra la pantalla para cambiar de pokemon
             case PLAYER_POKEMON_DEFEATED -> {   if (playersPokemonsDefeated()){ 
+                                                    // TODO modificar para que salga la pantalla del titulo
                                                     GameHandler.hideBattlePanel();
                                                     GameHandler.showGamePanel();
                                                 } else
                                                     openPokemonChangePanel(true);}
             // Si el dialogo es para indicar que el pokemon del enemigo ha sido derrotado se llama a la funcion que cambia al siguiente pokemon del enemigo
             case ENEMY_POKEMON_DEFEATED -> {    if (enemyPokemonsDefeated == 3) {
+                                                    enemyNPC.defeated(); // Se establece que el npc esta derrotado
                                                     player.pokemonBattleFinished();
                                                     GameHandler.hideBattlePanel();
                                                     GameHandler.showGamePanel();
@@ -485,8 +508,8 @@ public class BattlePanel extends JPanel {
 						e1.printStackTrace();
 					}
         // Se reescala la imagen
-        poke = new ImageIcon(imgPokemon.getImage().getScaledInstance((int)(fightPanel.getPreferredSize().width*0.3),
-                    (int)(fightPanel.getPreferredSize().height*0.5), Image.SCALE_DEFAULT));
+        poke = new ImageIcon(imgPokemon.getImage().getScaledInstance((int)(fightPanel.getPreferredSize().width*0.35),
+                    (int)(fightPanel.getPreferredSize().height*0.55), Image.SCALE_DEFAULT));
 
         // Creacion de la etiqueta con la imagen del pokemon ajustandose su tamaño y posicion
         enemysPokemonImage = new JLabel(poke);
@@ -552,10 +575,10 @@ public class BattlePanel extends JPanel {
             (int)(fightPanel.getPreferredSize().height*0.7), Image.SCALE_DEFAULT));
 
         playersPokemonImage = new JLabel(poke);
-        playersPokemonImage.setSize(new Dimension((int)(fightPanel.getPreferredSize().width*0.40),
-            (int)(fightPanel.getPreferredSize().height*0.6)));
-        playersPokemonImage.setLocation((int)(fightPanel.getPreferredSize().width*0.05) ,
-            fightPanel.getPreferredSize().height - (int)(fightPanel.getPreferredSize().height*0.15));
+        playersPokemonImage.setSize(new Dimension((int)(fightPanel.getPreferredSize().width*0.6),
+            (int)(fightPanel.getPreferredSize().height*0.8)));
+        playersPokemonImage.setLocation((int)(-fightPanel.getPreferredSize().width*0.02) ,
+            fightPanel.getPreferredSize().height - (int)(fightPanel.getPreferredSize().height*0.28));
         fightPanel.add(playersPokemonImage);
     }
 

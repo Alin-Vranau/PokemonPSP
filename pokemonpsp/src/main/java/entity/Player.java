@@ -136,7 +136,7 @@ public class Player extends Entity {
 				for (NPC_Personaje1 npc : gp.npcList) {
 					if (checkCollisionWithNPC(nextX, nextY, npc)) {
 						collisionOn = true;
-						if (keyH.ePressed && !battlePanelOpened) {
+						if (keyH.ePressed && !battlePanelOpened && !npc.getDefeated()) {
 							//gp.setVisible(false);
 							//gp.openBattlePanel(npc);
 							GameHandler.hideGamePanel();

@@ -51,8 +51,12 @@ public class Entity {
 			if (ids.contains(randomPokemonID)) {
 				continue;
 			}
+
+			Pokemon pokemon = new Pokemon(randomPokemonID);
+
 			ids.add(randomPokemonID);
-			pokemonTeam.add(new Pokemon(randomPokemonID));
+			pokemonTeam.add(pokemon);
+			
 		}
 		
 

@@ -10,6 +10,7 @@ import java.util.Random;
 public class NPC_Personaje1 extends Entity {
     
     private String imagePath;
+    private boolean defeated = false;
 
     public NPC_Personaje1(GamePanel gp, String characterName, String imagePath) {
         super(gp);
@@ -20,6 +21,10 @@ public class NPC_Personaje1 extends Entity {
         super.createNPCPokemonTeam();
         getImage();
         setPosition();
+    }
+
+    public boolean getDefeated() {
+        return defeated;
     }
 
     public void getImage() {
@@ -51,6 +56,10 @@ public class NPC_Personaje1 extends Entity {
                 validPosition = true;
             }
         }
+    }
+
+    public void defeated() {
+        defeated = true;
     }
     
     public void draw(Graphics2D g2) {

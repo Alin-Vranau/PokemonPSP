@@ -12,6 +12,7 @@ import com.jayway.jsonpath.JsonPath;
 import handlers.PokeAPIHandler;
 
 public class Pokemon {
+    private int id;
     private String name;
     private int health;
     private int actualHealth;
@@ -30,6 +31,10 @@ public class Pokemon {
     public Pokemon(int id) {
 
         setAtrributes(id, null);
+    }
+
+    public int getId() {
+        return id;
     }
 
     public String getName() {
@@ -85,6 +90,9 @@ public class Pokemon {
 
         // Obtencion de los datos de el pokemon elegido
         String responsePokemon = PokeAPIHandler.callPokeAPI("https://pokeapi.co/api/v2/pokemon/" + ((id == -1) ? name.toLowerCase() : id));
+
+        // Se obtiene la id del pokemon
+        this.id = new JSONObject(responsePokemon).getInt("id");
 
         // Se obtiene el nombre
         String apiName = new JSONObject(responsePokemon).getString("name");
