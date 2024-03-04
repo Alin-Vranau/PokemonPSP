@@ -19,7 +19,9 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Random;
+import java.util.Set;
 
 public class PokemonSelection {
     private List<String> selectedPokemonNames = new ArrayList<>();
@@ -27,9 +29,15 @@ public class PokemonSelection {
 
     public void selectPokemon() {
         try {
-            // Generar 3 IDs aleatorios de Pokémon
+            // Usar un conjunto para almacenar los IDs únicos de Pokémon
+            Set<Integer> pokemonIds = new HashSet<>();
             Random random = new Random();
-            int[] pokemonIds = {random.nextInt(151) + 1, random.nextInt(151) + 1, random.nextInt(151) + 1};
+
+            // Generar 3 IDs aleatorios únicos de Pokémon
+            while (pokemonIds.size() < 3) {
+                int id = random.nextInt(151) + 1; // Pokémon ID entre 1 y 151
+                pokemonIds.add(id); // El conjunto asegura que todos los IDs sean únicos
+            }
 
             for (int id : pokemonIds) {
                 // Realizar una solicitud GET a la PokeAPI para obtener información sobre el Pokémon
@@ -68,8 +76,9 @@ public class PokemonSelection {
     }
 }
 
-
 class PokemonSelectionWindow extends JDialog {
+    Font labelFont = new Font("Arial", Font.BOLD, 20);
+    Font Titulo = new Font("Arial", Font.BOLD, 25);
     public PokemonSelectionWindow(List<String> pokemonNames, List<String> pokemonFrontImages) {
         // Configuración básica de la ventana
         setTitle("Pokemon");
@@ -94,17 +103,20 @@ class PokemonSelectionWindow extends JDialog {
         
         JLabel selectGender = new JLabel("Selecciona el género");
         selectGender.setAlignmentX(Component.CENTER_ALIGNMENT);
+        selectGender.setFont(Titulo);
         mainPanel.add(selectGender);
         
         mainPanel.add(panelgenero);
         JRadioButton masculino = new JRadioButton();
         masculino.setText("Masculino");
         panelgenero.add(masculino);
+        masculino.setFont(labelFont);
         masculino.setSelected(true);
         
         JRadioButton femenino = new JRadioButton();
         femenino.setText("Femenino");
         panelgenero.add(femenino);
+        femenino.setFont(labelFont);
         
         ButtonGroup grupo = new ButtonGroup();
         grupo.add(femenino);
@@ -122,9 +134,12 @@ class PokemonSelectionWindow extends JDialog {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        // Añade un espacio fijo entre las imágenes
+        Dimension gapSize = new Dimension(10, 0); // Puedes ajustar el 10 al tamaño deseado del espacio
+        panelImageGender.add(Box.createRigidArea(gapSize));
         try {
             BufferedImage girlImage = ImageIO.read(getClass().getResource("/player/girl_down_1.png"));
-            Image scaledGirlImage = girlImage.getScaledInstance(100, 100, Image.SCALE_SMOOTH); // Ajustar el tamaño a 100x100
+            Image scaledGirlImage = girlImage.getScaledInstance(85, 85, Image.SCALE_SMOOTH); // Ajustar el tamaño a 100x100
             JLabel girlImageLabel = new JLabel(new ImageIcon(scaledGirlImage));
             panelImageGender.add(girlImageLabel);
         } catch (IOException e) {
@@ -134,11 +149,13 @@ class PokemonSelectionWindow extends JDialog {
         // Agregar JLabel "Estos son tus pokemons"
         JLabel selectLabel = new JLabel("Estos son tus pokemons");
         selectLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        selectLabel.setAlignmentY(Component.BOTTOM_ALIGNMENT);
+        selectLabel.setFont(Titulo);
         mainPanel.add(selectLabel);
 
         // Panel para las etiquetas de los Pokémon y sus imágenes
         JPanel pokemonPanel = new JPanel();
-        pokemonPanel.setLayout(new GridLayout(0, 2, 20, 20)); // Dos columnas con espaciado
+        pokemonPanel.setLayout(new GridLayout(3, 2, 5, 5)); // Reducir el espaciado a 10 horizontal y 5 vertical
         pokemonPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         // Agregar etiquetas e imágenes para cada Pokémon
@@ -148,7 +165,8 @@ class PokemonSelectionWindow extends JDialog {
 
             // Crear una etiqueta para el Pokémon
             JLabel pokemonLabel = new JLabel(pokemonName);
-            pokemonLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+            pokemonLabel.setHorizontalAlignment(JLabel.RIGHT); // Alinea el texto a la izquierda
+            pokemonLabel.setFont(labelFont);
 
             // Crear un panel para la imagen del Pokémon
             JPanel imagePanel = new JPanel();
@@ -158,8 +176,11 @@ class PokemonSelectionWindow extends JDialog {
             try {
                 URL url = new URL(imageUrl);
                 BufferedImage image = ImageIO.read(url);
-                JLabel imageLabel = new JLabel(new ImageIcon(image));
-                imagePanel.add(imageLabel, BorderLayout.CENTER);
+                int newWidth = 150; // Nuevo ancho
+                int newHeight = 150; // Nueva altura
+                Image scaledImage = image.getScaledInstance(newWidth, newHeight, Image.SCALE_SMOOTH);
+                JLabel imageLabel = new JLabel(new ImageIcon(scaledImage));
+                imagePanel.add(imageLabel, BorderLayout.LINE_START);
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
@@ -170,8 +191,9 @@ class PokemonSelectionWindow extends JDialog {
         }
 
         // Agregar el panel de Pokémon al panel principal
-        mainPanel.add(Box.createVerticalStrut(20)); // Añadir espacio
+        mainPanel.add(Box.createVerticalStrut(5)); // Añadir espacio
         mainPanel.add(pokemonPanel);
+
         // Crear un panel para los botones
         JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
