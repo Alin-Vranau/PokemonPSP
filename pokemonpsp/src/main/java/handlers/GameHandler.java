@@ -29,11 +29,9 @@ public class GameHandler {
         sqliteHandler = new SqliteHandler();
 
         Type.initializeTypes();
-        // Crear el panel del juego y pasarlo a la ventana
-        gamePanel = new GamePanel(mainWindow);
-        mainWindow.add(gamePanel);
-
-        gamePanel.startGameThread();
+        
+        // Inicializa el juego la primera vez
+        startGame();
 
         mainWindow.pack();
         mainWindow.setLocationRelativeTo(null);
@@ -41,6 +39,20 @@ public class GameHandler {
 
         mainWindow.setVisible(true);
     }
+
+
+    public static void startGame() {
+
+        if (gamePanel != null) {
+            mainWindow.remove(gamePanel);
+        }
+
+        gamePanel = new GamePanel(mainWindow);
+        mainWindow.add(gamePanel);
+
+        gamePanel.startGameThread();
+    }
+
 
     public static void hideGamePanel() {
         mainWindow.remove(gamePanel);

@@ -35,6 +35,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashSet;
 
 public class BattlePanel extends JPanel {
@@ -75,6 +76,8 @@ public class BattlePanel extends JPanel {
         // Crear el panel del juego y pasarlo a la ventana
         //gamePanel = new BattlePanel(window.getWidth(), window.getHeight(), new Pokemon("Drifloon"),
         //        new Pokemon("Tarountula") );
+        
+        
         window.add(gamePanel);
         
         window.setVisible(true);
@@ -125,22 +128,29 @@ public class BattlePanel extends JPanel {
         optionPanel.setPreferredSize(interactivePanel.getPreferredSize());
         //optionPanel.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(Color.BLACK, 3, true), BorderFactory.createLineBorder(Color.BLACK, 3, true)));
         optionPanel.setBackground(new Color(0,0,0,0));
+        optionPanel.setOpaque(false);
         optionPanel.setLayout(new GridBagLayout());
 
         interactivePanel.add(optionPanel);
-
+        
 
         add(fightPanel, BorderLayout.CENTER);
         add(interactivePanel, BorderLayout.SOUTH);
         
-        // Constraints temporales para los botones del panel de acciones
-        GridBagConstraints cons = new GridBagConstraints();
-        cons.fill = GridBagConstraints.BOTH;
-        cons.weightx= 0.3;
-        cons.weighty = 0.5;
+        // Constraints temporales para el boton de ataque
+        GridBagConstraints consAttackButton = new GridBagConstraints();
+        consAttackButton.fill = GridBagConstraints.HORIZONTAL;
+        consAttackButton.weightx= 1;
+        consAttackButton.gridwidth = 1;
+        consAttackButton.weighty = 1;
+        consAttackButton.gridwidth = 2;
+        consAttackButton.ipady=30;
+        consAttackButton.ipadx = 80;
+        consAttackButton.insets = new Insets(10, 10, 10, 10);
         
         // Creacion de los botones del panel de opciones
         JButton boton = new JButton("Atacar");
+        boton.setMinimumSize(new Dimension((int)(optionPanel.getPreferredSize().width*0.8), (int)(optionPanel.getPreferredSize().height*0.8)));
         boton.addActionListener(new ActionListener() {
 
             @Override
@@ -150,9 +160,20 @@ public class BattlePanel extends JPanel {
             }
             
         });
-        optionPanel.add(boton,cons);
+        optionPanel.add(boton,consAttackButton);
 
+
+        // Constraints temporales para el boton de ataque
+        GridBagConstraints consChangeButton = new GridBagConstraints();
+        consChangeButton.fill = GridBagConstraints.HORIZONTAL;
+        consChangeButton.weightx= 0.5;
+        consChangeButton.gridwidth = 1;
+        consChangeButton.weighty = 1;
+        consChangeButton.ipady=30;
+        consChangeButton.ipadx = 80;
+        consChangeButton.insets = new Insets(10, 10, 10, 10);
         JButton boton2 = new JButton("Cambiar Pokemon");
+        boton2.setMinimumSize(new Dimension((int)(optionPanel.getPreferredSize().width*0.8), (int)(optionPanel.getPreferredSize().height*0.8)));
         boton2.addActionListener(new ActionListener() {
 
             @Override
@@ -163,7 +184,7 @@ public class BattlePanel extends JPanel {
             
         });
 
-        optionPanel.add(boton2,cons);
+        optionPanel.add(boton2,consChangeButton);
 
         
     }

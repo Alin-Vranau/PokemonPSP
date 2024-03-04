@@ -6,6 +6,20 @@
     "configurations": [
         {
             "type": "java",
+            "name": "LoadingScreen",
+            "request": "launch",
+            "mainClass": "screens.LoadingScreen",
+            "projectName": "pokemonpsp"
+        },
+        {
+            "type": "java",
+            "name": "GameHandler",
+            "request": "launch",
+            "mainClass": "handlers.GameHandler",
+            "projectName": "pokemonpsp"
+        },
+        {
+            "type": "java",
             "name": "Current File",
             "request": "launch",
             "mainClass": "${file}"
