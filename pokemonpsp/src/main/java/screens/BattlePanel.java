@@ -428,6 +428,7 @@ public class BattlePanel extends JPanel {
             // Si el dialogo es para indicar que el pokemon del jugador ha sido derrotado se llama a la funcion que muestra la pantalla para cambiar de pokemon
             case PLAYER_POKEMON_DEFEATED -> {   if (playersPokemonsDefeated()){ 
                                                     // TODO modificar para que salga la pantalla del titulo
+                                                    player.defeated();
                                                     GameHandler.hideBattlePanel();
                                                     GameHandler.showGamePanel();
                                                 } else

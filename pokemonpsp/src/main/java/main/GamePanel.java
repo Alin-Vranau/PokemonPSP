@@ -150,6 +150,22 @@ public class GamePanel extends JPanel implements Runnable {
 	}	
 
 
+	public boolean checkAllNPCsDefeated() {
+
+		boolean win = true;
+
+		for (NPC_Personaje1 npc : npcList) {
+			if (! npc.getDefeated()) {
+				win = false;
+				break;
+			}
+		}
+
+		return win;
+
+	}
+
+
 	public void openBattlePanel(NPC_Personaje1 npc) {
         // Crear el panel de batalla // TODO modificar
         battlePanel = new BattlePanel(window.getWidth(), window.getHeight(), player, npc);

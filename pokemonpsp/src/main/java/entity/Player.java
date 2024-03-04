@@ -23,10 +23,12 @@ public class Player extends Entity {
 	public static String gender;
 	public final int screenX;
 	public final int screenY;
-	private List<String> pokemonNames;
+	public List<String> pokemonNames;
 	private boolean battlePanelOpened = false;
 	private boolean pokedexPanelOpened = false;	
 	private screenPokedex pokedex;
+
+	
 
 	public Player(GamePanel gp, KeyHandler keyH, PokemonSelection pokemonSelection) {
 		super(gp);
@@ -34,7 +36,7 @@ public class Player extends Entity {
 		this.keyH = keyH;
 		this.pokemonNames = pokemonSelection.getSelectedPokemonNames();
 
-		super.createPokemonTeam(pokemonNames);
+		//super.createPokemonTeam(pokemonNames);
 
 		screenX = gp.screenWidth / 2 - (gp.tileSize/2);
 		screenY = gp.screenHeight / 2 - (gp.tileSize/2);
