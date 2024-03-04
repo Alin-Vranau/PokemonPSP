@@ -1,5 +1,6 @@
 package entity;
 
+import java.awt.Point;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.io.IOException;
@@ -38,22 +39,24 @@ public class NPC_Personaje1 extends Entity {
     private void setPosition() {
         Random random = new Random();
         boolean validPosition = false;
-
+    
         while (!validPosition) {
-            // Genera coordenadas aleatorias dentro de los límites del mapa
             int x = random.nextInt(gp.maxWorldCol);
             int y = random.nextInt(gp.maxWorldRow);
-
+    
             // Convierte coordenadas de tile a coordenadas del mundo
             int worldX = x * gp.tileSize;
             int worldY = y * gp.tileSize;
-
-            // Comprueba si el tile en esa posición no tiene colisión
-            if (!gp.getTileManager().tile[gp.getTileManager().mapTileNum[x][y]].collision) {
-                // Si el tile es transitable, actualiza la posición del NPC
+    
+            // Verifica si el tile en esa posición no tiene colisión y no está ocupado
+            if (!gp.getTileManager().tile[gp.getTileManager().mapTileNum[x][y]].collision && !gp.isPositionOccupied(x, y)) {
+                // Si el tile es transitable y no está ocupado, actualiza la posición del NPC
                 this.worldX = worldX;
                 this.worldY = worldY;
                 validPosition = true;
+    
+                // Añade la posición a las posiciones ocupadas en GamePanel
+                gp.npcPositions.add(new Point(x, y));
             }
         }
     }

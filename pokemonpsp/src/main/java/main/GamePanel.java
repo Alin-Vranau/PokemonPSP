@@ -7,10 +7,11 @@ import java.awt.Graphics2D;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
+import java.awt.Point;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-
+import java.util.HashSet;
+import java.util.Set;
 import Tile.TileManager;
 import entity.NPC_Personaje1;
 import entity.Player;
@@ -42,6 +43,7 @@ public class GamePanel extends JPanel implements Runnable {
 	Thread gameThread;
 	public CollisionChecker cChecker = new CollisionChecker(this);
 	public Player player;
+	public Set<Point> npcPositions = new HashSet<>();
 
 	private boolean runThread = true;
 	
@@ -70,6 +72,10 @@ public class GamePanel extends JPanel implements Runnable {
             npcList.add(npc);
         }
     }
+
+    public boolean isPositionOccupied(int x, int y) {
+        return npcPositions.contains(new Point(x, y));
+    }    
 
 	public void startGameThread() {
 		gameThread = new Thread(this);
