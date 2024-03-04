@@ -6,6 +6,7 @@ package screens;
 
 import javax.swing.JFrame;
 
+import handlers.GameHandler;
 import main.GamePanel;
 
 /**
@@ -145,6 +146,8 @@ public class screenStart extends javax.swing.JFrame {
         iniciarJuego();
     }//GEN-LAST:event_bNuevaPartidaActionPerformed
     private void iniciarJuego() {
+        new GameHandler();
+    /* 
     JFrame window = new JFrame();
     window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     window.setResizable(false);
@@ -158,6 +161,7 @@ public class screenStart extends javax.swing.JFrame {
     window.setVisible(true);
 
     gamePanel.startGameThread();
+    */
 }
 
     /**
@@ -169,6 +173,7 @@ public class screenStart extends javax.swing.JFrame {
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
          * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
          */
+         /* 
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
                 if ("Nimbus".equals(info.getName())) {
@@ -185,6 +190,7 @@ public class screenStart extends javax.swing.JFrame {
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(screenStart.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        */
         //</editor-fold>
 
         /* Create and display the form */

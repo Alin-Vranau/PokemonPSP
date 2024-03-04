@@ -19,7 +19,7 @@ public class NPC_Personaje1 extends Entity {
         direction = "down";
         solidArea = new Rectangle(0, 0, gp.tileSize, gp.tileSize);
         speed = 0;
-        super.createNPCPokemonTeam();
+        //super.createNPCPokemonTeam();
         getImage();
         setPosition();
     }

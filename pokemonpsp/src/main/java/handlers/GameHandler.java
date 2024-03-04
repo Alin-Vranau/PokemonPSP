@@ -1,13 +1,17 @@
 package handlers;
 
 import java.awt.BorderLayout;
+import java.util.ArrayList;
 
 import javax.swing.JFrame;
 
+import Threads.PrepareNPCPokemons;
 import entity.NPC_Personaje1;
 import main.GamePanel;
 import objects.Type;
 import screens.BattlePanel;
+import screens.LoadingScreen;
+import screens.screenStart;
 
 public class GameHandler {
 
@@ -16,6 +20,7 @@ public class GameHandler {
     private static JFrame mainWindow;
     private static GamePanel gamePanel;
     private static BattlePanel battlePanel;
+    private static LoadingScreen loadingScreen;
 
     public static SqliteHandler sqliteHandler;
 
@@ -28,16 +33,30 @@ public class GameHandler {
 
         sqliteHandler = new SqliteHandler();
 
-        Type.initializeTypes();
-        
-        // Inicializa el juego la primera vez
+        showLoadingScreen();
+
         startGame();
+
+        hideGamePanel();
+
+        
 
         mainWindow.pack();
         mainWindow.setLocationRelativeTo(null);
         
 
         mainWindow.setVisible(true);
+
+        if (Type.typesList == null){
+            Type.initializeTypes();
+        }
+        
+        
+        // Inicializa el juego la primera vez
+        //startGame();
+
+        
+        
     }
 
 
@@ -48,9 +67,29 @@ public class GameHandler {
         }
 
         gamePanel = new GamePanel(mainWindow);
-        mainWindow.add(gamePanel);
+        
 
         gamePanel.startGameThread();
+
+        Thread t = new PrepareNPCPokemons((ArrayList)gamePanel.npcList);
+        t.start();
+    }
+
+    public static void showLoadingScreen() {
+        loadingScreen = new LoadingScreen(width, height);
+
+        mainWindow.add(loadingScreen);
+
+        
+    }
+
+    public static void hideLoadingScreen() {
+
+        loadingScreen.closeWindow();
+
+        mainWindow.remove(loadingScreen);
+
+
     }
 
 
@@ -64,6 +103,7 @@ public class GameHandler {
         mainWindow.add(gamePanel);
         gamePanel.startGameThread();
         gamePanel.setVisible(true);
+        mainWindow.pack();
         // Para que el personaje se mueva al volver de un combate
         gamePanel.grabFocus();
         

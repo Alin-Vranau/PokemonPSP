@@ -149,7 +149,7 @@ public class LoadingScreen extends JPanel implements Runnable{
         win.setVisible(true);
     }
 
-    private void closeWindow() {
+    public void closeWindow() {
         stopThread = true;
     }
 
