@@ -4,6 +4,7 @@
  */
 package screens;
 import handlers.GameHandler;
+import handlers.SqliteHandler;
 
 /**
  *
@@ -30,7 +31,7 @@ public class screenStart extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         titulo = new javax.swing.JLabel();
         titulo2 = new javax.swing.JLabel();
-        bContinuarPartida = new javax.swing.JButton();
+        bReiniciarPokedex = new javax.swing.JButton();
         bNuevaPartida = new javax.swing.JButton();
         bSalir = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
@@ -43,14 +44,19 @@ public class screenStart extends javax.swing.JFrame {
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
 
-        titulo.setFont(new java.awt.Font("Lucida Sans Typewriter", 1, 48)); // NOI18N
-        titulo.setText("POKEMON");
+        titulo.setFont(new java.awt.Font("Lucida Sans Typewriter", 1, 40)); // NOI18N
+        titulo.setText("POKETRAINER");
 
         titulo2.setText("____________________");
 
-        bContinuarPartida.setBackground(new java.awt.Color(255, 0, 0));
-        bContinuarPartida.setFont(new java.awt.Font("Segoe UI Black", 1, 18)); // NOI18N
-        bContinuarPartida.setText("CONTINUAR PARTIDA");
+        bReiniciarPokedex.setBackground(new java.awt.Color(255, 0, 0));
+        bReiniciarPokedex.setFont(new java.awt.Font("Segoe UI Black", 1, 18)); // NOI18N
+        bReiniciarPokedex.setText("REINICIAR POKEDEX");
+        bReiniciarPokedex.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bReiniciarPokedexActionPerformed(evt);
+            }
+        });
 
         bNuevaPartida.setBackground(new java.awt.Color(255, 0, 0));
         bNuevaPartida.setFont(new java.awt.Font("Segoe UI Black", 1, 18)); // NOI18N
@@ -80,7 +86,7 @@ public class screenStart extends javax.swing.JFrame {
                         .addGap(16, 16, 16)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(titulo2, javax.swing.GroupLayout.PREFERRED_SIZE, 296, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(bContinuarPartida, javax.swing.GroupLayout.PREFERRED_SIZE, 286, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(bReiniciarPokedex, javax.swing.GroupLayout.PREFERRED_SIZE, 286, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(bNuevaPartida, javax.swing.GroupLayout.PREFERRED_SIZE, 286, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(bSalir, javax.swing.GroupLayout.PREFERRED_SIZE, 286, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(jPanel1Layout.createSequentialGroup()
@@ -96,7 +102,7 @@ public class screenStart extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(titulo2)
                 .addGap(18, 18, 18)
-                .addComponent(bContinuarPartida, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(bReiniciarPokedex, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(29, 29, 29)
                 .addComponent(bNuevaPartida, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(30, 30, 30)
@@ -135,6 +141,10 @@ public class screenStart extends javax.swing.JFrame {
     private void bSalirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bSalirActionPerformed
         System.exit(0);
     }//GEN-LAST:event_bSalirActionPerformed
+
+    private void bReiniciarPokedexActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bSalirActionPerformed
+        sqliteHandler.resetPokedex();
+    }
 
     private void bNuevaPartidaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bNuevaPartidaActionPerformed
         this.dispose();
@@ -197,7 +207,7 @@ public class screenStart extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton bContinuarPartida;
+    private javax.swing.JButton bReiniciarPokedex;
     private javax.swing.JButton bNuevaPartida;
     private javax.swing.JButton bSalir;
     private javax.swing.JLabel iPikachu;
@@ -205,5 +215,6 @@ public class screenStart extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JLabel titulo;
     private javax.swing.JLabel titulo2;
+    private SqliteHandler sqliteHandler = new SqliteHandler();
     // End of variables declaration//GEN-END:variables
 }
