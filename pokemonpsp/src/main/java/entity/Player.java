@@ -25,7 +25,7 @@ public class Player extends Entity {
 	public static String gender;
 	public final int screenX;
 	public final int screenY;
-	private List<String> pokemonNames;
+	public List<String> pokemonNames;
 	private boolean battlePanelOpened = false;
 	private boolean pokedexPanelOpened = false;	
 	private screenPokedex pokedex;
@@ -34,13 +34,15 @@ public class Player extends Entity {
 	private final int PROXIMITY_RANGE = 50; // Este valor es en píxeles. Ajusta según la necesidad.
 
 
+	
+
 	public Player(GamePanel gp, KeyHandler keyH, PokemonSelection pokemonSelection) {
 		super(gp);
 
 		this.keyH = keyH;
 		this.pokemonNames = pokemonSelection.getSelectedPokemonNames();
 
-		super.createPokemonTeam(pokemonNames);
+		//super.createPokemonTeam(pokemonNames);
 
 		screenX = gp.screenWidth / 2 - (gp.tileSize/2);
 		screenY = gp.screenHeight / 2 - (gp.tileSize/2);

@@ -11,7 +11,7 @@ import java.util.Random;
 public class NPC_Personaje1 extends Entity {
     
     private String imagePath;
-    private boolean defeated = false;
+    
 
     public NPC_Personaje1(GamePanel gp, String characterName, String imagePath) {
         super(gp);
@@ -24,9 +24,7 @@ public class NPC_Personaje1 extends Entity {
         setPosition();
     }
 
-    public boolean getDefeated() {
-        return defeated;
-    }
+    
 
     public void getImage() {
         try {
@@ -61,9 +59,7 @@ public class NPC_Personaje1 extends Entity {
         }
     }
 
-    public void defeated() {
-        defeated = true;
-    }
+    
     
     public void draw(Graphics2D g2) {
         int screenX = worldX - gp.player.worldX + gp.player.screenX;

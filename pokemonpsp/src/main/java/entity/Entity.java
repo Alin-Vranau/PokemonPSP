@@ -19,10 +19,19 @@ public class Entity {
 	public Rectangle solidArea = new Rectangle(0, 0, 48, 48);
 	public boolean collisionOn = false;
 	public ArrayList<Pokemon> pokemonTeam = new ArrayList<>();
+	private boolean defeated = false;
 
 	public Entity (GamePanel gp){
 		this.gp = gp;
 	}
+
+	public boolean getDefeated() {
+        return defeated;
+    }
+
+	public void defeated() {
+        defeated = true;
+    }
 
 	public ArrayList<Pokemon> getPokemonTeam() {
 		return pokemonTeam;
