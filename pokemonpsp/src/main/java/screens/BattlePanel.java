@@ -90,7 +90,6 @@ public class BattlePanel extends JPanel {
 		this.setFocusable(true);
         this.setLayout(new BorderLayout());
         this.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
-
         this.player = player;
         this.enemyNPC = enemyNPC;
 

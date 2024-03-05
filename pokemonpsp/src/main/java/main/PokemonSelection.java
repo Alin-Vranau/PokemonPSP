@@ -84,6 +84,7 @@ class PokemonSelectionWindow extends JDialog {
         setTitle("Pokemon");
         setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
         setSize(800, 650);
+        setUndecorated(true);
         setModal(true);
         addWindowListener(new java.awt.event.WindowAdapter() {
             @Override

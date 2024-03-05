@@ -11,7 +11,6 @@ import main.GamePanel;
 import objects.Type;
 import screens.BattlePanel;
 import screens.LoadingScreen;
-import screens.screenStart;
 
 public class GameHandler {
 
@@ -67,7 +66,6 @@ public class GameHandler {
         }
 
         gamePanel = new GamePanel(mainWindow);
-        
 
         gamePanel.startGameThread();
 
@@ -101,9 +99,11 @@ public class GameHandler {
 
     public static void showGamePanel() {
         mainWindow.add(gamePanel);
+        mainWindow.setLocationRelativeTo(null);
         gamePanel.startGameThread();
         gamePanel.setVisible(true);
         mainWindow.pack();
+        
         // Para que el personaje se mueva al volver de un combate
         gamePanel.grabFocus();
         

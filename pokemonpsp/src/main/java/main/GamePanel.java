@@ -58,6 +58,7 @@ public class GamePanel extends JPanel implements Runnable {
     	pokemonSelection.selectPokemon();
 		this.player = new Player(this, keyH, pokemonSelection);
 		addRandomNPCs();
+		window.setUndecorated(true);
 	}
 
 	private void addRandomNPCs() {

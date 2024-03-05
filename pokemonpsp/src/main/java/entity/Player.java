@@ -1,5 +1,7 @@
 package entity;
 
+import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.event.WindowAdapter;
@@ -27,6 +29,10 @@ public class Player extends Entity {
 	private boolean battlePanelOpened = false;
 	private boolean pokedexPanelOpened = false;	
 	private screenPokedex pokedex;
+	private String infoMessage = "";
+	private boolean showInfoMessage = false;
+	private final int PROXIMITY_RANGE = 50; // Este valor es en píxeles. Ajusta según la necesidad.
+
 
 	public Player(GamePanel gp, KeyHandler keyH, PokemonSelection pokemonSelection) {
 		super(gp);
@@ -94,6 +100,28 @@ public class Player extends Entity {
 	}
 
 	public void update() {
+		showInfoMessage = false;
+		for (NPC_Personaje1 npc : gp.npcList) {
+			if (isPlayerNearNPC(npc)) { // Verifica si el jugador está cerca del NPC
+				if (!npc.getDefeated()) {
+					// Si el NPC no está vencido, muestra el mensaje para iniciar la batalla
+					infoMessage = "Pulsa \"E\" para comenzar batalla";
+				} else {
+					// Si el NPC está vencido, muestra el mensaje "Derrotado"
+					infoMessage = "Derrotado";
+				}
+				showInfoMessage = true; // Indica que debe mostrarse el mensaje
+				break; // Sale del bucle después de encontrar el primer NPC cercano
+			}
+		}
+		NPC_Personaje1 nearNPC = getNearNPC(); // Obtén el NPC cercano, si existe
+		if (keyH.ePressed && !battlePanelOpened && nearNPC != null) {
+			// Aquí asumimos que getNearNPC ya no solo verifica la colisión, sino la proximidad
+			GameHandler.hideGamePanel();
+			GameHandler.showBattlePanel(nearNPC);
+			battlePanelOpened = true;
+			keyH.ePressed = false; // Asegúrate de restablecer el estado de la tecla "e"
+		}
 		if (keyH.pPressed) {
 			if (pokedex == null) {
 				// Crear la ventana de la Pokedex si no existe.
@@ -138,14 +166,6 @@ public class Player extends Entity {
 				for (NPC_Personaje1 npc : gp.npcList) {
 					if (checkCollisionWithNPC(nextX, nextY, npc)) {
 						collisionOn = true;
-						if (keyH.ePressed && !battlePanelOpened && !npc.getDefeated()) {
-							//gp.setVisible(false);
-							//gp.openBattlePanel(npc);
-							GameHandler.hideGamePanel();
-							GameHandler.showBattlePanel(npc);
-							battlePanelOpened = true;
-							keyH.reset();
-						}
 						break;
 					}
 				}
@@ -165,6 +185,27 @@ public class Player extends Entity {
 			}
 		}
 	}
+	public NPC_Personaje1 getNearNPC() {
+		for (NPC_Personaje1 npc : gp.npcList) {
+			double distance = Math.sqrt(Math.pow(worldX - npc.worldX, 2) + Math.pow(worldY - npc.worldY, 2));
+			if (distance < PROXIMITY_RANGE && !npc.getDefeated()) {
+				return npc;
+			}
+		}
+		return null; // Ningún NPC está suficientemente cerca
+	}
+	
+
+	public boolean isPlayerNearNPC(NPC_Personaje1 npc) {
+		// Calcula la distancia entre el jugador y el NPC
+		int deltaX = worldX - npc.worldX; // Diferencia en X
+		int deltaY = worldY - npc.worldY; // Diferencia en Y
+		double distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY); // Teorema de Pitágoras para distancia
+	
+		// Verifica si la distancia es menor que el rango de proximidad
+		return distance < PROXIMITY_RANGE;
+	}
+	
 
 	private void togglePokedexVisibility() {
 		SwingUtilities.invokeLater(() -> {
@@ -225,6 +266,12 @@ public class Player extends Entity {
 			break;
 		}
 		g2.drawImage(image, screenX, screenY, gp.tileSize, gp.tileSize, null);
+		if (showInfoMessage) {
+			g2.setColor(Color.WHITE); // Establece el color del texto
+			g2.setFont(new Font("Arial", Font.BOLD, 14)); // Establece la fuente del texto
+			// Dibuja el mensaje en la pantalla. Ajusta las coordenadas (x, y) según sea necesario.
+			g2.drawString(infoMessage, screenX - 150, screenY - 20);
+		}
 	}
 
 	public void pokemonBattleFinished() {
