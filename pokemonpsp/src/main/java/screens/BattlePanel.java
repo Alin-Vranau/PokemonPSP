@@ -35,7 +35,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.HashSet;
 
 public class BattlePanel extends JPanel {
@@ -441,8 +440,9 @@ public class BattlePanel extends JPanel {
                                                 } else {
                                                     enemyPokemon = enemyNPC.getPokemonTeam().get(enemyPokemonsDefeated);
                                                     String text = String.format("El enemigo ha sacado a %s", enemyPokemon.getName());
-                                                    battlePanel.showDialog(text, DialogType.PLAYER_POKEMON_CHANGED);
                                                     placeEnemyPokemon(enemyPokemon);
+                                                    battlePanel.showDialog(text, DialogType.PLAYER_POKEMON_CHANGED);
+                                                    
                                                 }
 
             }
@@ -545,7 +545,7 @@ public class BattlePanel extends JPanel {
         enemysPokemonImage.setLocation(fightPanel.getPreferredSize().width - (int)(fightPanel.getPreferredSize().width*0.37),
                                             (int)(fightPanel.getPreferredSize().height*0.23));
         fightPanel.add(enemysPokemonImage);
-
+        
         repaint();
     }
 

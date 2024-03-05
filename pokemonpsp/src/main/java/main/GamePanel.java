@@ -1,13 +1,23 @@
 package main;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.awt.Point;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import java.util.HashSet;
@@ -15,7 +25,9 @@ import java.util.Set;
 import Tile.TileManager;
 import entity.NPC_Personaje1;
 import entity.Player;
+import handlers.GameHandler;
 import screens.BattlePanel;
+import screens.screenStart;
 
 public class GamePanel extends JPanel implements Runnable {
 	public List<NPC_Personaje1> npcList = new ArrayList<>();
@@ -45,6 +57,8 @@ public class GamePanel extends JPanel implements Runnable {
 	public Player player;
 	public Set<Point> npcPositions = new HashSet<>();
 
+	private JPanel pauseMenu;
+
 	private boolean runThread = true;
 	
 	public GamePanel(JFrame window) {
@@ -58,7 +72,7 @@ public class GamePanel extends JPanel implements Runnable {
     	pokemonSelection.selectPokemon();
 		this.player = new Player(this, keyH, pokemonSelection);
 		addRandomNPCs();
-		window.setUndecorated(true);
+		
 	}
 
 	private void addRandomNPCs() {
@@ -164,6 +178,88 @@ public class GamePanel extends JPanel implements Runnable {
 
 		return win;
 
+	}
+
+	public void showPauseMenu(){
+
+		if (pauseMenu == null) {
+			pauseMenu = new JPanel();
+			pauseMenu.setOpaque(false);
+			pauseMenu.setSize(screenWidth, screenHeight);
+			pauseMenu.setLayout(new GridBagLayout());
+			pauseMenu.addKeyListener(new KeyListener() {
+
+				@Override
+				public void keyTyped(KeyEvent e) {
+				}
+
+				@Override
+				public void keyPressed(KeyEvent e) {
+					if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+						hidePauseMenu();
+					}
+				}
+
+				@Override
+				public void keyReleased(KeyEvent e) {
+				}
+				
+			});
+			Insets i1 = new Insets(50, 50, 25, 50);
+
+			GridBagConstraints resumeConstraints = new GridBagConstraints();
+			resumeConstraints.insets = i1;
+			resumeConstraints.gridy = 0;
+			JButton resumeButton = new JButton("Reanudar");
+			resumeButton.setMinimumSize(new Dimension((int)(screenWidth*0.5),(int)(screenHeight*0.2)));
+			resumeButton.setPreferredSize(new Dimension((int)(screenWidth*0.5),(int)(screenHeight*0.2)));
+
+			resumeButton.addActionListener(new ActionListener() {
+
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					hidePauseMenu();
+				}
+				
+			});
+
+
+			Insets i2 = new Insets(50, 50, 25, 50);
+
+			GridBagConstraints pauseConstraints = new GridBagConstraints();
+			pauseConstraints.insets = i2;
+			pauseConstraints.gridy = 1;
+
+			JButton exitButton = new JButton("Salir");
+
+			exitButton.setMinimumSize(new Dimension((int)(screenWidth*0.5),(int)(screenHeight*0.2)));
+			exitButton.setPreferredSize(new Dimension((int)(screenWidth*0.5),(int)(screenHeight*0.2)));
+
+			exitButton.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					stopThread();
+					GameHandler.mainWindow.dispose();
+                    new screenStart().setVisible(true);
+				}
+			});
+
+			pauseMenu.add(resumeButton, resumeConstraints);
+			pauseMenu.add(exitButton, pauseConstraints);
+			GameHandler.mainWindow.add(pauseMenu, BorderLayout.CENTER);
+		}
+
+		pauseMenu.setVisible(true);
+		GameHandler.hideGamePanel();
+		//setVisible(false);
+		pauseMenu.revalidate();
+		pauseMenu.repaint();
+		pauseMenu.grabFocus();
+	}
+
+	public void hidePauseMenu() {
+		pauseMenu.setVisible(false);
+		GameHandler.showGamePanel();
 	}
 
 

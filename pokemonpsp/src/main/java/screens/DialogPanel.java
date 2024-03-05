@@ -24,7 +24,6 @@ public class DialogPanel extends JPanel implements Runnable{
     private String FIN_ETIQUETA = "</p></html>";
 
     enum DialogType {
-        CHARACTER, // Sin uso, posible canversación con NPC?
         PLAYER_ATTACK, // El jugador ha realizado un ataque
         ENEMY_ATTACK, // El enemigo ha realizado un ataque
         PLAYER_POKEMON_DEFEATED, // El pokemon del jugador ha sido derrotado

@@ -6,6 +6,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "pause",
+            "request": "launch",
+            "mainClass": "screens.pause",
+            "projectName": "pokemonpsp"
+        },
+        {
+            "type": "java",
             "name": "screenStart",
             "request": "launch",
             "mainClass": "screens.screenStart",

@@ -1,6 +1,11 @@
 package handlers;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
@@ -12,6 +17,7 @@ import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.SwingConstants;
 
 import Threads.PreparePokemons;
 import entity.NPC_Personaje1;
@@ -25,8 +31,8 @@ public class GameHandler {
 
     private static int width = 700;
     private static int height = 500;
-    private static JFrame mainWindow;
-    private static GamePanel gamePanel;
+    public static JFrame mainWindow;
+    public static GamePanel gamePanel;
     private static BattlePanel battlePanel;
     private static LoadingScreen loadingScreen;
 
@@ -40,16 +46,14 @@ public class GameHandler {
         mainWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         mainWindow.setResizable(false);
         mainWindow.setTitle("Pokemon");
-
+        mainWindow.setUndecorated(true);
         sqliteHandler = new SqliteHandler();
-
-        showLoadingScreen();
 
         startGame();
 
         hideGamePanel();
 
-        
+        showLoadingScreen();
 
         mainWindow.pack();
         mainWindow.setLocationRelativeTo(null);
@@ -80,7 +84,7 @@ public class GameHandler {
 
         gamePanel.startGameThread();
 
-        Thread t = new PreparePokemons((ArrayList)gamePanel.npcList, gamePanel.player);
+        Thread t = new PreparePokemons((ArrayList<NPC_Personaje1>)gamePanel.npcList, gamePanel.player);
         t.start();
     }
 
@@ -110,7 +114,6 @@ public class GameHandler {
 
     public static void showGamePanel() {
         mainWindow.add(gamePanel);
-        mainWindow.setLocationRelativeTo(null);
         gamePanel.startGameThread();
         gamePanel.setVisible(true);
         mainWindow.pack();
@@ -140,13 +143,29 @@ public class GameHandler {
     private static void showEndGameDialog(String dialogText) {
 
         endGameDialog = new JDialog(mainWindow, "La partida ha terminado");
-            endGameDialog.setSize(100,100);
+            endGameDialog.setSize(400,200);
             endGameDialog.setLocationRelativeTo(null);
+
             JPanel p = new JPanel();
+            p.setSize(400,200);
+            p.setLayout(new GridBagLayout());
 
+            GridBagConstraints constraintsLabel = new GridBagConstraints();
+            constraintsLabel.gridy = 0;
+            constraintsLabel.insets = new Insets(20, 40, 15, 40);
             JLabel dialogTextLabel = new JLabel(dialogText);
+            dialogTextLabel.setFont(new Font(dialogTextLabel.getFont().getName(), Font.PLAIN, 20));
+            dialogTextLabel.setVerticalAlignment(SwingConstants.CENTER);
+            dialogTextLabel.setHorizontalAlignment(SwingConstants.CENTER);
+            dialogTextLabel.setPreferredSize(new Dimension(200, 50));
+            dialogTextLabel.setMinimumSize(new Dimension(200, 50));
 
+            GridBagConstraints constraintsButton = new GridBagConstraints();
+            constraintsButton.gridy = 1;
+            constraintsButton.insets = new Insets(15, 40, 20, 40);
             JButton dialogButton = new JButton("Continuar");
+            dialogButton.setPreferredSize(new Dimension(200, 50));
+            dialogButton.setMinimumSize(new Dimension(200, 50));
             dialogButton.addActionListener(new ActionListener() {
 
                 @Override
@@ -192,8 +211,8 @@ public class GameHandler {
 
 
 
-            p.add(dialogTextLabel);
-            p.add(dialogButton);
+            p.add(dialogTextLabel, constraintsLabel);
+            p.add(dialogButton, constraintsButton);
             endGameDialog.add(p);
             endGameDialog.setModal(true);
             endGameDialog.setVisible(true);
@@ -203,8 +222,6 @@ public class GameHandler {
     public static void showBattlePanel(NPC_Personaje1 npc){
         
         battlePanel = new BattlePanel(width, height, gamePanel.player, npc);
-        
-
         
         mainWindow.add(battlePanel, BorderLayout.CENTER);
         

@@ -27,7 +27,7 @@ public class LoadingScreen extends JPanel implements Runnable{
     JLabel loadingText;
     JLabel tipsLabel;
 
-    private int width, height;
+    private int width;
     private String INICIO_ETIQUETA = "<html><p style=\"width:" + Math.round(width*0.75) +"px; text-align:center\">";
     private String FIN_ETIQUETA = "</p></html>";
 
@@ -37,7 +37,6 @@ public class LoadingScreen extends JPanel implements Runnable{
     public LoadingScreen(int width, int height) {
 
         this.width = width;
-        this.height = height;
         INICIO_ETIQUETA = "<html><p style=\"width:" + Math.round(width*0.70) +"px; text-align:center\">";
         this.setSize(new Dimension(width, height));
         this.setMinimumSize(new Dimension(width, height));

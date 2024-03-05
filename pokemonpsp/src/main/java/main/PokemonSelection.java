@@ -64,7 +64,7 @@ public class PokemonSelection {
             }
 
             // Crear y mostrar la ventana de selección de Pokémon
-            PokemonSelectionWindow selectionWindow = new PokemonSelectionWindow(selectedPokemonNames, selectedPokemonImages);
+            new PokemonSelectionWindow(selectedPokemonNames, selectedPokemonImages);
             
         } catch (IOException e) {
             e.printStackTrace();

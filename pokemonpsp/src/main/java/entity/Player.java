@@ -27,7 +27,7 @@ public class Player extends Entity {
 	public final int screenY;
 	public List<String> pokemonNames;
 	private boolean battlePanelOpened = false;
-	private boolean pokedexPanelOpened = false;	
+	private boolean pokedexPanelOpened = false;
 	private screenPokedex pokedex;
 	private String infoMessage = "";
 	private boolean showInfoMessage = false;
@@ -118,6 +118,7 @@ public class Player extends Entity {
 		}
 		NPC_Personaje1 nearNPC = getNearNPC(); // Obtén el NPC cercano, si existe
 		if (keyH.ePressed && !battlePanelOpened && nearNPC != null) {
+			keyH.reset();
 			// Aquí asumimos que getNearNPC ya no solo verifica la colisión, sino la proximidad
 			GameHandler.hideGamePanel();
 			GameHandler.showBattlePanel(nearNPC);
@@ -141,6 +142,12 @@ public class Player extends Entity {
 			// Alternar la visibilidad de la Pokedex.
 			togglePokedexVisibility();
 			keyH.pPressed = false; // Asegurar que la pulsación se maneje una sola vez.
+		}
+		if (keyH.escPressed && !pokedexPanelOpened && !battlePanelOpened) {
+			keyH.reset();
+			gp.showPauseMenu();
+				
+			keyH.escPressed = false;
 		}
 		collisionOn = false;
 		if (keyH.upPressed || keyH.downPressed || keyH.leftPressed || keyH.rightPressed) {
