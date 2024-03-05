@@ -29,8 +29,8 @@ import screens.screenStart;
 
 public class GameHandler {
 
-    private static int width = 700;
-    private static int height = 500;
+    private static int width = 768;
+    private static int height = 556;
     public static JFrame mainWindow;
     public static GamePanel gamePanel;
     private static BattlePanel battlePanel;
@@ -130,11 +130,11 @@ public class GameHandler {
             System.out.println("Derrota");
             gamePanel.stopThread();
             
-            showEndGameDialog("Has perdido :(.");
+            showEndGameDialog("Has perdido 😢.");
         } else if (gamePanel.checkAllNPCsDefeated()) {
             //Ganado
             gamePanel.stopThread();
-            showEndGameDialog("Has ganado :).");
+            showEndGameDialog("Has ganado 😁.");
             
         }
 

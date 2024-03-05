@@ -40,6 +40,7 @@ public class LoadingScreen extends JPanel implements Runnable{
         INICIO_ETIQUETA = "<html><p style=\"width:" + Math.round(width*0.70) +"px; text-align:center\">";
         this.setSize(new Dimension(width, height));
         this.setMinimumSize(new Dimension(width, height));
+        this.setPreferredSize(new Dimension(width, height));
         this.setLayout(new GridBagLayout());
 
         Icon imgIcon = new ImageIcon(new ImageIcon(this.getClass().getResource("/pokeball_gif/poke.gif")).getImage().getScaledInstance(200, 200, Image.SCALE_DEFAULT));
@@ -91,12 +92,14 @@ public class LoadingScreen extends JPanel implements Runnable{
 
     private void setTips() {
 
-        String[] tips = {"Prueba a atacar a tu enemigo :P",
-                        "Saber la tabla de tipos debes",
+        String[] tips = {"Prueba a atacar a tu enemigo 😜",
+                        "Saber la tabla de tipos debes 👽",
                         "Si mantienes el ratón sobre un ataque puedes ver su tipo.",
                         "Para empezar un combate acercate a un NPC y pulsa la E",
                         "Para abrir la pokedex pulsa la P",
-                        "La pokedex contiene información sobre los pokemons, ademas de indicar cuales has visto y cuales has derrotado"};
+                        "La pokedex contiene información sobre los pokemons, ademas de indicar cuales has visto y cuales has derrotado",
+                        "Angel si lees esto nos tienes que poner un 10 😉"
+                        };
 
         this.tips = tips;
 
@@ -164,7 +167,6 @@ public class LoadingScreen extends JPanel implements Runnable{
             try {
                 Thread.sleep(5000);
             } catch (InterruptedException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
         }
