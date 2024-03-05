@@ -52,7 +52,6 @@ public class Entity {
 	public void createNPCPokemonTeam() {
 
 		ArrayList<Integer> ids = new ArrayList<>();
-		System.out.println("entidad");
 		//151 pokemons
 		while (ids.size() < 3) {
 			int randomPokemonID =(int) (Math.random()*151 + 1);

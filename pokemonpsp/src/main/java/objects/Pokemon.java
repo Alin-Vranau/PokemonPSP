@@ -140,7 +140,6 @@ public class Pokemon {
     private HashSet<Move> setRandomMoves(String responsePokemon) {
         HashSet<Move> outputMoves = new HashSet<>();
 
-
         // Obtencion de las url de los tipos para obtener el id de los tipos del pokemon
         List<String> typesURLList = JsonPath.read(responsePokemon.toString(), "$.types[*].type.url");
 
@@ -157,9 +156,9 @@ public class Pokemon {
 
         int iteracion = 0;
 
-        // Bucle que se repite hasta que el pokemon tiene 4 ataques no repetidos o hasta que se llega a 45
+        // Bucle que se repite hasta que el pokemon tiene 4 ataques no repetidos o hasta que se llega a 25
         // iteraciones (como no se añaden ataques de poder 0 se evita un bucle infinito si el pokemon no tiene ataques suficientes)
-        while (outputMoves.size() < 4 && iteracion != 45) {
+        while (outputMoves.size() < 4 && iteracion != 25) {
 
             iteracion++;
             

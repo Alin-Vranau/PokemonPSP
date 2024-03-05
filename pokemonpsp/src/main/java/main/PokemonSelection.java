@@ -57,7 +57,7 @@ public class PokemonSelection {
                 JSONObject jsonResponse = new JSONObject(response.toString());
                 String name = jsonResponse.getString("name");
                 String imageUrl = jsonResponse.getJSONObject("sprites").getString("front_default");
-
+                name = name.substring(0, 1).toUpperCase() + name.substring(1);
                 // Agregar el nombre y la imagen del Pokémon a las listas
                 selectedPokemonNames.add(name);
                 selectedPokemonImages.add(imageUrl);
